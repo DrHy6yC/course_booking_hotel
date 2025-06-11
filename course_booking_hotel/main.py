@@ -10,7 +10,11 @@ hotels = [
 ]
 
 
-@app.get("/hotels")
+@app.get(
+    path="/hotels",
+    summary="Получение списка отелей",
+    description="Можно получить список по айдишнику или по названию отеля",
+)
 def get_hotels(
         id: int | None = Query(default=None, description="Айдишник"),
         title: str | None = Query(default=None, description="Название отеля"),
@@ -25,7 +29,11 @@ def get_hotels(
     return hotels_
 
 
-@app.post("/hotels")
+@app.post(
+    path="/hotels",
+    summary="Добавление нового отеля",
+    description="Необходимо ввести title и name, id генерируется автоматически",
+)
 def create_hotel(
         title: str = Body(embed=True),
         name: str = Body(embed=True),
@@ -39,7 +47,11 @@ def create_hotel(
     return {"status": "OK"}
 
 
-@app.put("/hotels/{hotel_id}")
+@app.put(
+    path="/hotels/{hotel_id}",
+    summary="Изменение уже существующего отеля по id",
+    description="Необходимо ввести все параметры",
+)
 def all_hotel_changes(
         hotel_id: int,
         title: str = Body(embed=True),
@@ -53,7 +65,11 @@ def all_hotel_changes(
     return {"status": "OK"}
 
 
-@app.patch("/hotels/{hotel_id}")
+@app.patch(
+    path="/hotels/{hotel_id}",
+    summary="Изменение уже существующего отеля по id",
+    description="Можно изменить любой из парметров, а так же все параметры",
+)
 def hotel_changes(
         hotel_id: int,
         title: str | None = Body(default=None, embed=True),
@@ -69,14 +85,21 @@ def hotel_changes(
     return {"status": "OK"}
 
 
-@app.delete("/hotels/{hotel_id}")
+@app.delete(
+    path="/hotels/{hotel_id}",
+    summary="Удаление уже существующего отеля по id",
+    description="Удаляем отель по id",
+)
 def delete_hotel(hotel_id: int):
     global hotels
     hotels = [hotel for hotel in hotels if hotel["id"] != hotel_id]
     return {"status": "OK"}
 
 
-@app.get("/docs", include_in_schema=False)
+@app.get(
+    path="/docs",
+    include_in_schema=False
+)
 async def custom_swagger_ui_html():
     return get_swagger_ui_html(
         openapi_url=app.openapi_url,
@@ -88,4 +111,7 @@ async def custom_swagger_ui_html():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)
+    uvicorn.run(
+        app="main:app",
+        reload=True
+    )
