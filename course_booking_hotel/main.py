@@ -5,8 +5,8 @@ import uvicorn
 app = FastAPI(docs_url=None)
 
 hotels = [
-    {"id": 1, "title": "Sochi"},
-    {"id": 2, "title": "Дубай"},
+    {"id": 1, "title": "Sochi", "name": "Sochi Luxe"},
+    {"id": 2, "title": "Дубай", "name": "Luxury Dubai Hotel"},
 ]
 
 
@@ -28,11 +28,13 @@ def get_hotels(
 @app.post("/hotels")
 def create_hotel(
         title: str = Body(embed=True),
+        name: str = Body(embed=True),
 ):
     global hotels
     hotels.append({
         "id": hotels[-1]["id"] + 1,
-        "title": title
+        "title": title,
+        "name": name,
     })
     return {"status": "OK"}
 
