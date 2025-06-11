@@ -12,8 +12,8 @@ hotels = [
 
 @app.get("/hotels")
 def get_hotels(
-        id: int | None = Query(None, description="Айдишник"),
-        title: str | None = Query(None, description="Название отеля"),
+        id: int | None = Query(default=None, description="Айдишник"),
+        title: str | None = Query(default=None, description="Название отеля"),
 ):
     hotels_ = []
     for hotel in hotels:
@@ -36,6 +36,36 @@ def create_hotel(
         "title": title,
         "name": name,
     })
+    return {"status": "OK"}
+
+
+@app.put("/hotels/{hotel_id}")
+def all_hotel_changes(
+        hotel_id: int,
+        title: str = Body(embed=True),
+        name: str = Body(embed=True),
+):
+    global hotels
+    for hotel in hotels:
+        if hotel["id"] == hotel_id:
+            hotel["title"] = title
+            hotel["name"] = name
+    return {"status": "OK"}
+
+
+@app.patch("/hotels/{hotel_id}")
+def hotel_changes(
+        hotel_id: int,
+        title: str | None = Body(default=None, embed=True),
+        name: str | None = Body(default=None, embed=True),
+):
+    global hotels
+    for hotel in hotels:
+        if hotel["id"] == hotel_id:
+            if title:
+                hotel["title"] = title
+            if name:
+                hotel["name"] = name
     return {"status": "OK"}
 
 
