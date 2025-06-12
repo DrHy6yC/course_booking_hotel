@@ -1,11 +1,8 @@
 from fastapi import APIRouter, Body, Query
 
-
 from schemas.hotel import Hotel, HotelPatch
 
-
 router = APIRouter(prefix="/hotels", tags=["Отели"])
-
 
 hotels = [
     {"id": 1, "title": "Sochi", "name": "Sochi Luxe"},
@@ -37,12 +34,29 @@ def get_hotels(
     summary="Добавление нового отеля",
     description="Необходимо ввести title и name, id генерируется автоматически",
 )
-def create_hotel(hotel_data: Hotel):
+def create_hotel(hotel_data: Hotel = Body(
+    openapi_examples={
+        "1": {
+                "summary": "Сочи",
+                "value": {
+                    "title": "Отель Сочи 5 звезд у моря",
+                    "name": "sochi_u_morya",
+                }
+            },
+        "2": {
+                "summary": "Дубай",
+                "value": {
+                    "title": "Отель Дубай У фонтана",
+                    "name": "dubai_fountain",
+                }
+            },
+    })
+):
     global hotels
     hotels.append({
         "id": hotels[-1]["id"] + 1,
-        "title": Hotel.title,
-        "name": Hotel.name,
+        "title": hotel_data.title,
+        "name": hotel_data.name,
     })
     return {"status": "OK"}
 
@@ -59,8 +73,8 @@ def all_hotel_changes(
     global hotels
     for hotel in hotels:
         if hotel["id"] == hotel_id:
-            hotel["title"] = Hotel.title
-            hotel["name"] = Hotel.name
+            hotel["title"] = hotel_data.title
+            hotel["name"] = hotel_data.name
     return {"status": "OK"}
 
 
@@ -76,10 +90,10 @@ def hotel_changes(
     global hotels
     for hotel in hotels:
         if hotel["id"] == hotel_id:
-            if HotelPatch.title:
-                hotel["title"] = HotelPatch.title
-            if HotelPatch.name:
-                hotel["name"] = HotelPatch.name
+            if hotel_data.title:
+                hotel["title"] = hotel_data.title
+            if hotel_data.name:
+                hotel["name"] = hotel_data.name
     return {"status": "OK"}
 
 
