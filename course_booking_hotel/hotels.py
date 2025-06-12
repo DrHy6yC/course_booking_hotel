@@ -1,13 +1,10 @@
 from fastapi import APIRouter, Body, Query
-from pydantic import BaseModel
+
+
+from schemas.hotel import Hotel, HotelPatch
 
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
-
-
-class Hotel(BaseModel):
-    title: str
-    name: str
 
 
 hotels = [
@@ -74,16 +71,15 @@ def all_hotel_changes(
 )
 def hotel_changes(
         hotel_id: int,
-        title: str | None = Body(default=None, embed=True),
-        name: str | None = Body(default=None, embed=True),
+        hotel_data: HotelPatch
 ):
     global hotels
     for hotel in hotels:
         if hotel["id"] == hotel_id:
-            if title:
-                hotel["title"] = title
-            if name:
-                hotel["name"] = name
+            if HotelPatch.title:
+                hotel["title"] = HotelPatch.title
+            if HotelPatch.name:
+                hotel["name"] = HotelPatch.name
     return {"status": "OK"}
 
 
