@@ -1,0 +1,6 @@
+.venv
+.idea
+/venv/
+/.gitignore
+/postgres-data/
+.env
