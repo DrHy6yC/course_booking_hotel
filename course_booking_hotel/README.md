@@ -22,6 +22,8 @@
 ```alembic revision --autogenerate -m "Будет в названии миграции"```
 ### 3. Приводим БД к последней миграции:
 ```alembic upgrade head```
+### 4. Откат на необходимую версию
+```alembic downgrade 2cc9735fdf6e ```
 ***
 ##  Команды docker'a
 ### 1. Запуск контейнера:
