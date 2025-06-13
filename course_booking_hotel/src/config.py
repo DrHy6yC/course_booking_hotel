@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     PG_VERSION: str
     PG_HOST: str
-    PG_PORT: str
+    PG_PORT: int
     PG_USER: str
     PG_PASSWORD: str
     PG_DB_NAME: str
