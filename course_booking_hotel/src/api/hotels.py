@@ -28,7 +28,7 @@ async def get_hotels(
         if title:
             query = query.filter(func.lower(HotelsORM.title).contains(title.strip().lower()))
         if location:
-            query = query.filter(func.lower(HotelsORM.location).like(location.strip().lower()))
+            query = query.filter(func.lower(HotelsORM.location).contains(location.strip().lower()))
         query = (
             query.
             limit(limit).
