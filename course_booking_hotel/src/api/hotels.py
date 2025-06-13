@@ -1,20 +1,13 @@
 from fastapi import APIRouter, Body, Query
+from sqlalchemy import insert
 
 
 from src.api.dependencies import PaginationDep
+from src.database import async_session_maker
+from src.models.hotels import HotelsORM
 from src.schemas.hotel import Hotel, HotelPatch
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
-
-hotels = [
-    {"id": 1, "title": "Sochi", "name": "sochi"},
-    {"id": 2, "title": "Дубай", "name": "dubai"},
-    {"id": 3, "title": "Мальдивы", "name": "maldivi"},
-    {"id": 4, "title": "Геленджик", "name": "gelendzhik"},
-    {"id": 5, "title": "Москва", "name": "moscow"},
-    {"id": 6, "title": "Казань", "name": "kazan"},
-    {"id": 7, "title": "Санкт-Петербург", "name": "spb"},
-]
 
 
 @router.get(
@@ -46,30 +39,28 @@ def get_hotels(
     summary="Добавление нового отеля",
     description="Необходимо ввести title и name, id генерируется автоматически",
 )
-def create_hotel(hotel_data: Hotel = Body(
+async def create_hotel(hotel_data: Hotel = Body(
     openapi_examples={
         "1": {
                 "summary": "Сочи",
                 "value": {
                     "title": "Отель Сочи 5 звезд у моря",
-                    "name": "sochi_u_morya",
+                    "location": "Сочи, ул Моря, д, 12",
                 }
             },
         "2": {
                 "summary": "Дубай",
                 "value": {
                     "title": "Отель Дубай У фонтана",
-                    "name": "dubai_fountain",
+                    "location": "Дубай, ул Фонтана, д, 12",
                 }
             },
     })
 ):
-    global hotels
-    hotels.append({
-        "id": hotels[-1]["id"] + 1,
-        "title": hotel_data.title,
-        "name": hotel_data.name,
-    })
+    async  with async_session_maker() as session:
+        add_hotel_stmt = insert(HotelsORM).values(**hotel_data.model_dump())
+        await session.execute(add_hotel_stmt)
+        await session.commit()
     return {"status": "OK"}
 
 

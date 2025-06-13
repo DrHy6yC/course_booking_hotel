@@ -25,6 +25,19 @@
 ### 4. Откат на необходимую версию
 ```alembic downgrade 2cc9735fdf6e ```
 ***
+##  Команды для дебага SQL-запросов
+### 1. Дебажить через engine
+``````
+engine = create_async_engine(url=settings.DB_URL, echo=True)
+``````
+### 2. Дебажить через compile:
+``````
+async  with async_session_maker() as session:
+    add_hotel_stmt = insert(HotelsORM).values(**hotel_data.model_dump())
+    print(add_hotel_stmt.compile(engine, compile_kwargs={"literal_binds": True}))
+``````
+        
+***
 ##  Команды docker'a
 ### 1. Запуск контейнера:
 ```docker compose up -d```
