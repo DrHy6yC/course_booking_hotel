@@ -3,3 +3,4 @@ course_booking_hotel/.idea
 /venv/
 /postgres-data/
 .env
+/.idea
