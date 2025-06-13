@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import func, insert, select
 
 
 from src.models.hotels import HotelsORM
