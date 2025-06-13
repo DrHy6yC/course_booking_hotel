@@ -1,6 +1,5 @@
 .venv
-.idea
+course_booking_hotel/.idea
 /venv/
-/.gitignore
 /postgres-data/
 .env
