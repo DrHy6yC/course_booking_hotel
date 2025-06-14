@@ -80,17 +80,13 @@ async def all_hotel_changes(
     summary="Изменение уже существующего отеля по id",
     description="Можно изменить любой из параметров, а так же все параметры",
 )
-def hotel_changes(
+async def hotel_changes(
         hotel_id: int,
         hotel_data: HotelPatch
 ):
-    global hotels
-    for hotel in hotels:
-        if hotel["id"] == hotel_id:
-            if hotel_data.title:
-                hotel["title"] = hotel_data.title
-            if hotel_data.name:
-                hotel["name"] = hotel_data.name
+    async  with async_session_maker() as session:
+        await HotelsRepository(session).edit(id=hotel_id, model_data=hotel_data, exclude_unset=True)
+        await session.commit()
     return {"status": "OK"}
 
 
