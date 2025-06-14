@@ -1,0 +1,2 @@
+Разбор проекта № 1: Netflix Dispatch
+Ссылка на Github: https://github.com/Netflix/dispatch
