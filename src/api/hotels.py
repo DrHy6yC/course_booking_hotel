@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Body, Query
-from sqlalchemy import insert, select, func
+from fastapi import APIRouter, Body, HTTPException, Query, status
 
 
 from src.api.dependencies import PaginationDep
 from src.database import async_session_maker
-from src.models.hotels import HotelsORM
 from src.repositories.hotels import HotelsRepository
 from src.schemas.hotel import Hotel, HotelPatch
 
@@ -67,15 +65,13 @@ async def create_hotel(hotel_data: Hotel = Body(
     summary="Изменение уже существующего отеля по id",
     description="Необходимо ввести все параметры",
 )
-def all_hotel_changes(
+async def all_hotel_changes(
         hotel_id: int,
         hotel_data: Hotel,
 ):
-    global hotels
-    for hotel in hotels:
-        if hotel["id"] == hotel_id:
-            hotel["title"] = hotel_data.title
-            hotel["name"] = hotel_data.name
+    async  with async_session_maker() as session:
+        await HotelsRepository(session).edit(hotel_id,hotel_data)
+        await session.commit()
     return {"status": "OK"}
 
 
@@ -103,7 +99,15 @@ def hotel_changes(
     summary="Удаление уже существующего отеля по id",
     description="Удаляем отель по id",
 )
-def delete_hotel(hotel_id: int):
-    global hotels
-    hotels = [hotel for hotel in hotels if hotel["id"] != hotel_id]
-    return {"status": "OK"}
+async def delete_hotel(hotel_id: int):
+    async  with async_session_maker() as session:
+        result = await HotelsRepository(session).delete(hotel_id)
+        if result == 200:
+            await session.commit()
+            return {"status": "OK"}
+        elif result == 404:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={"status": "Error - NOT_FOUND"})
+        else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "Error - BAD_REQUEST"})
+
+
