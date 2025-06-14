@@ -1,13 +1,15 @@
-from sqlalchemy import func, insert, select
+from sqlalchemy import func, select
 
 
 from src.models.hotels import HotelsORM
 from src.repositories.base import BaseRepository
+from src.schemas.hotel import Hotel
 
 
 
 class HotelsRepository(BaseRepository):
     model = HotelsORM
+    schema = Hotel
 
     async def get_all(
             self,
@@ -15,7 +17,7 @@ class HotelsRepository(BaseRepository):
             location,
             limit,
             offset,
-    ):
+    ) -> list[Hotel]:
         query = select(HotelsORM)
         if title:
             query = query.filter(func.lower(HotelsORM.title).contains(title.strip().lower()))
@@ -27,4 +29,4 @@ class HotelsRepository(BaseRepository):
             offset(offset)
         )
         result = await self.session.execute(query)
-        return result.scalars().all()
+        return [Hotel.model_validate(obj=hotel, from_attributes=True) for hotel in result.scalars().all()]
