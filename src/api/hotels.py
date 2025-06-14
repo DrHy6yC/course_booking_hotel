@@ -12,7 +12,7 @@ router = APIRouter(prefix="/hotels", tags=["Отели"])
 @router.get(
     path="",
     summary="Получение списка отелей",
-    description="Можно получить список по айдишнику или по названию отеля",
+    description="Можно получить список по локации или по названию отеля",
 )
 async def get_hotels(
         paginations: PaginationDep,
@@ -29,6 +29,16 @@ async def get_hotels(
             limit=limit,
             offset=offset
         )
+
+
+@router.get(
+    path="/{hotels_id}",
+    summary="Получение информации по одному отелю",
+    description="Можно получить один отель по айди"
+)
+async def get_hotel(hotel_id: int):
+    async with async_session_maker() as session:
+        return await HotelsRepository(session).get_one_or_none(id=hotel_id)
 
 
 @router.post(
@@ -54,7 +64,7 @@ async def create_hotel(hotel_data: Hotel = Body(
             },
     })
 ):
-    async  with async_session_maker() as session:
+    async with async_session_maker() as session:
         result = await HotelsRepository(session).add(hotel_data)
         await session.commit()
     return {"status": "OK", "hotel": result}
@@ -69,7 +79,7 @@ async def all_hotel_changes(
         hotel_id: int,
         hotel_data: Hotel,
 ):
-    async  with async_session_maker() as session:
+    async with async_session_maker() as session:
         await HotelsRepository(session).edit(id=hotel_id,model_data=hotel_data)
         await session.commit()
     return {"status": "OK"}
@@ -84,7 +94,7 @@ async def hotel_changes(
         hotel_id: int,
         hotel_data: HotelPatch
 ):
-    async  with async_session_maker() as session:
+    async with async_session_maker() as session:
         await HotelsRepository(session).edit(id=hotel_id, model_data=hotel_data, exclude_unset=True)
         await session.commit()
     return {"status": "OK"}
@@ -96,7 +106,7 @@ async def hotel_changes(
     description="Удаляем отель по id",
 )
 async def delete_hotel(hotel_id: int):
-    async  with async_session_maker() as session:
+    async with async_session_maker() as session:
         result = await HotelsRepository(session).delete(id=hotel_id)
         if result == 200:
             await session.commit()
