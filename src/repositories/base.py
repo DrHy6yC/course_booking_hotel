@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import select, insert, delete, update
 
 
@@ -13,7 +14,7 @@ class BaseRepository:
 
     async def add(
             self,
-            model_data,
+            model_data: BaseModel,
     ):
         add_model_stmt = insert(self.model).values(**model_data.model_dump()).returning(self.model)
         result = await self.session.execute(add_model_stmt)
@@ -22,22 +23,22 @@ class BaseRepository:
 
     async def edit(
             self,
-            model_id: int,
-            model_data
+            model_data: BaseModel,
+            **filter_by
     ):
-        edit_model_stmt = update(self.model).values(**model_data.model_dump()).filter(self.model.id==model_id)
+        edit_model_stmt = update(self.model).filter_by(**filter_by).values(**model_data.model_dump())
         await self.session.execute(edit_model_stmt)
 
 
     async def delete(
             self,
-            model_id: int
+            **filter_by
     ):
-        query_select = select(self.model).where(self.model.id==model_id)
+        query_select = select(self.model).filter_by(**filter_by)
         result_select = await self.session.execute(query_select)
         count_model = len(result_select.scalars().all())
         if  count_model== 1:
-            query_delete = delete(self.model).filter(self.model.id==model_id)
+            query_delete = delete(self.model).filter_by(**filter_by)
             await self.session.execute(query_delete)
             return 200
         elif count_model == 0:

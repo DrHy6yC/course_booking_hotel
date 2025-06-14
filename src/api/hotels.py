@@ -70,7 +70,7 @@ async def all_hotel_changes(
         hotel_data: Hotel,
 ):
     async  with async_session_maker() as session:
-        await HotelsRepository(session).edit(hotel_id,hotel_data)
+        await HotelsRepository(session).edit(id=hotel_id,model_data=hotel_data)
         await session.commit()
     return {"status": "OK"}
 
@@ -101,7 +101,7 @@ def hotel_changes(
 )
 async def delete_hotel(hotel_id: int):
     async  with async_session_maker() as session:
-        result = await HotelsRepository(session).delete(hotel_id)
+        result = await HotelsRepository(session).delete(id=hotel_id)
         if result == 200:
             await session.commit()
             return {"status": "OK"}
