@@ -20,4 +20,8 @@ class UsersORM(BaseORM):
     hashed_password: Mapped[str] = mapped_column(String(length=100))
     name: Mapped[str] = mapped_column(String(length=100))
     age: Mapped[int] = mapped_column(Integer())
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        server_default=func.now(),
+        nullable=False
+    )

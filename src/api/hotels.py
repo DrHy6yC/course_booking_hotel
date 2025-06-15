@@ -46,23 +46,25 @@ async def get_hotel(hotel_id: int):
     summary="Добавление нового отеля",
     description="Необходимо ввести title и name, id генерируется автоматически",
 )
-async def create_hotel(hotel_data: HotelAdd = Body(
-    openapi_examples={
-        "1": {
-                "summary": "Сочи",
-                "value": {
-                    "title": "Отель Сочи 5 звезд у моря",
-                    "location": "Сочи, ул Моря, д, 12",
-                }
-            },
-        "2": {
-                "summary": "Дубай",
-                "value": {
-                    "title": "Отель Дубай У фонтана",
-                    "location": "Дубай, ул Фонтана, д, 12",
-                }
-            },
-    })
+async def create_hotel(
+        hotel_data: HotelAdd = Body(
+            openapi_examples={
+                "1": {
+                        "summary": "Сочи",
+                        "value": {
+                            "title": "Отель Сочи 5 звезд у моря",
+                            "location": "Сочи, ул Моря, д, 12",
+                        }
+                    },
+                "2": {
+                        "summary": "Дубай",
+                        "value": {
+                            "title": "Отель Дубай У фонтана",
+                            "location": "Дубай, ул Фонтана, д, 12",
+                        }
+                    },
+            }
+        )
 ):
     async with async_session_maker() as session:
         result = await HotelsRepository(session).add(hotel_data)
