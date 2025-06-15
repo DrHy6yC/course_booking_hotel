@@ -4,21 +4,22 @@
 ```git remote add main https://github.com/DrHy6yC/course_booking_hotel.git ```
 ***
 ## Активация виртуального окружения
-```. venv/bin/activate ```
-***
-##  Запуск проекта
-``````
-python src/main.py
-или
-python -m uvicorn src.main:app --reload
-
-``````
+```python3 -m venv venv```
+```. venv/bin/activate```
+```pip install --upgrade pip```
 ***
 ## Работа с внешними библиотеками
 ### 1. Установка библиотек из requirements.txt
 ```pip install -r requirements.txt ```
 ### 2. Добавление установленных библиотек в requirements.txt
 ```pip freeze >requirements.txt```
+***
+##  Запуск проекта
+``````
+python src/main.py
+или
+python -m uvicorn src.main:app --reload
+``````
 ***
 ##  Команды для миграции
 ### 1. Инициируем алембик и создаем папку для миграций, а так же все необходимые конфиги:
