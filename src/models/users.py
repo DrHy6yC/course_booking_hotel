@@ -1,7 +1,8 @@
 from datetime import datetime
 
 
-from sqlalchemy import CheckConstraint, Integer, String
+from sqlalchemy import CheckConstraint, DDL, event, Integer, String
+
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
@@ -15,13 +16,12 @@ class UsersORM(BaseORM):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    login: Mapped[str] = mapped_column(String(length=100))
-    email: Mapped[str] = mapped_column(String(length=100))
+    login: Mapped[str] = mapped_column(String(length=100), unique=True)
+    email: Mapped[str] = mapped_column(String(length=100), unique=True)
     hashed_password: Mapped[str] = mapped_column(String(length=100))
     name: Mapped[str] = mapped_column(String(length=100))
     age: Mapped[int] = mapped_column(Integer())
     created_at: Mapped[datetime] = mapped_column(
-        default=datetime.utcnow,
-        server_default=func.now(),
-        nullable=False
+        server_default=func.current_timestamp(),
+        nullable = False
     )

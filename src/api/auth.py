@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Body
+
+
+from fastapi import APIRouter, Body, HTTPException, status
 from passlib.context import CryptContext
 
 
@@ -52,7 +54,13 @@ async def register_user(
         hashed_password=hash_password,
     )
     async with async_session_maker() as session:
-        await UsersRepository(session).add(data_db)
-        await session.commit()
+        try:
+            await UsersRepository(session).add(data_db)
+            await session.commit()
+            return {"status": "OK"}
+        except Exception as error:
+            print(error)
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail={"status": "Error - Пользователь с такими данными уже сущестует"})
 
-    return {"status": "OK"}

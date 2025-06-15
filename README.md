@@ -7,7 +7,12 @@
 ```. venv/bin/activate ```
 ***
 ##  Запуск проекта
-```python src/main.py```
+``````
+python src/main.py
+или
+python -m uvicorn src.main:app --reload
+
+``````
 ***
 ## Работа с внешними библиотеками
 ### 1. Установка библиотек из requirements.txt
