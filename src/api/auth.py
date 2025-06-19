@@ -1,40 +1,13 @@
-from datetime import datetime, timedelta, timezone
-
-
-from fastapi import APIRouter, Body, HTTPException, status
-
-
-import jwt
-from passlib.context import CryptContext
+from fastapi import APIRouter, Body, HTTPException, Response,status
 
 
 from src.database import async_session_maker
-from src.config import settings
 from src.openapi_examples import admin_example,admin_login_example, user_example
 from src.repositories.users import UsersRepository
 from src.schemas.user import UserRequestAdd, UserAdd, UserLogin
-
+from src.services.auth import AuthServices
 
 router = APIRouter(prefix="/auth", tags=["Авторизация и аутентификайия"])
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def create_access_token(data: dict) -> str:
-    to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTE)
-    to_encode |= {"exp": expire}
-    encoded_jwt = jwt.encode(
-        payload=to_encode,
-        key=settings.SECRET_KEY,
-        algorithm=settings.ALGORITHM,
-    )
-    return encoded_jwt
-
 
 
 @router.post(
@@ -50,7 +23,7 @@ async def register_user(
           },
       )
 ):
-    hash_password = pwd_context.hash(data.password)
+    hash_password = AuthServices().hashed_password(data.password)
     data_db = UserAdd(
         login=data.login,
         name=data.name,
@@ -78,6 +51,7 @@ async def register_user(
 
 )
 async def login_user(
+        response: Response,
         data: UserLogin = Body(
             openapi_examples={
                 "1": admin_login_example,
@@ -91,10 +65,11 @@ async def login_user(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail={"status": "Error - Пользователь с таким email не зарегистрирован"}
             )
-        if not verify_password(data.password, user.hashed_password):
+        if not AuthServices().verify_password(data.password, user.hashed_password):
             raise  HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail={"status": "Error - Пароль не верный"}
             )
-        access_token = create_access_token({"user_id": user.id})
+        access_token = AuthServices().create_access_token({"user_id": user.id})
+        response.set_cookie(key="access_token", value=access_token)
         return access_token

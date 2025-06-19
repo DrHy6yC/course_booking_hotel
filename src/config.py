@@ -9,8 +9,8 @@ class Settings(BaseSettings):
     PG_DB_NAME: str
     PG_DATA: str
 
-    SECRET_KEY: str
-    ALGORITHM: str
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTE: int
 
     @property
