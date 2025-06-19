@@ -77,6 +77,6 @@ async def login_user(
 
 
 @router.post("/only_auth")
-async def only_auth(request: Request):
-    access_token = request.cookies["access_token"]
+async def only_auth(request: Request) -> str | None:
+    access_token = request.cookies.get("access_token", None)
     return access_token
