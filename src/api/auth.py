@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Body, HTTPException, Request, Response, status
+from fastapi import APIRouter, Body, HTTPException, Response, status
 
-
+from src.api.dependencies import UserIdDep
 from src.database import async_session_maker
 from src.openapi_examples import admin_example,admin_login_example, user_example
 from src.repositories.users import UsersRepository
@@ -80,16 +80,7 @@ async def login_user(
     summary="Получить активного пользователя",
     description="Ищет пользователя по информации из куков"
 )
-async def get_me(request: Request) -> User:
-    access_token = request.cookies.get("access_token", None)
-    if not access_token:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"status": "Error - нет активного пользователя, залогиньтесь"}
-        )
-    payload = AuthServices().decoded_access_token(access_token)
-    user_id = payload["user_id"]
+async def get_me(user_id: UserIdDep) -> User:
     async with async_session_maker() as session:
         user = await UsersRepository(session).get_one_or_none(id=user_id)
-
     return user
