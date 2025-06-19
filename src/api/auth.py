@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Body, HTTPException, Response,status
+from debugpy.adapter import access_token
+from fastapi import APIRouter, Body, HTTPException, Request, Response, status
 
 
 from src.database import async_session_maker
@@ -73,3 +74,9 @@ async def login_user(
         access_token = AuthServices().create_access_token({"user_id": user.id})
         response.set_cookie(key="access_token", value=access_token)
         return access_token
+
+
+@router.post("/only_auth")
+async def only_auth(request: Request):
+    access_token = request.cookies["access_token"]
+    return access_token
