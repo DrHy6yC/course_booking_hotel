@@ -28,3 +28,10 @@ class AuthServices:
             algorithm=settings.JWT_ALGORITHM,
         )
         return encoded_jwt
+
+    def decoded_access_token(self, access_token: str):
+        return jwt.decode(
+            jwt=access_token,
+            key=settings.JWT_SECRET_KEY,
+            algorithms=[settings.JWT_ALGORITHM],
+        )

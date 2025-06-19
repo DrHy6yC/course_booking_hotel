@@ -1,11 +1,10 @@
-from debugpy.adapter import access_token
 from fastapi import APIRouter, Body, HTTPException, Request, Response, status
 
 
 from src.database import async_session_maker
 from src.openapi_examples import admin_example,admin_login_example, user_example
 from src.repositories.users import UsersRepository
-from src.schemas.user import UserRequestAdd, UserAdd, UserLogin
+from src.schemas.user import User, UserAdd, UserLogin, UserRequestAdd
 from src.services.auth import AuthServices
 
 router = APIRouter(prefix="/auth", tags=["Авторизация и аутентификайия"])
@@ -76,7 +75,21 @@ async def login_user(
         return access_token
 
 
-@router.post("/only_auth")
-async def only_auth(request: Request) -> str | None:
+@router.get(
+    path="/me",
+    summary="Получить активного пользователя",
+    description="Ищет пользователя по информации из куков"
+)
+async def get_me(request: Request) -> User:
     access_token = request.cookies.get("access_token", None)
-    return access_token
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"status": "Error - нет активного пользователя, залогиньтесь"}
+        )
+    payload = AuthServices().decoded_access_token(access_token)
+    user_id = payload["user_id"]
+    async with async_session_maker() as session:
+        user = await UsersRepository(session).get_one_or_none(id=user_id)
+
+    return user
