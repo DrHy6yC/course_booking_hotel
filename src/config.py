@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     PG_DB_NAME: str
     PG_DATA: str
 
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTE: int
+
     @property
 
     def DB_URL(self):

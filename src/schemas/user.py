@@ -4,6 +4,10 @@ from datetime import datetime
 from pydantic import BaseModel, conint, EmailStr
 
 
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
 class UserBase(BaseModel):
     login: str
     name: str
@@ -20,3 +24,6 @@ class UserAdd(UserBase):
 class User(UserBase):
     id: int
     created_at: datetime
+
+class UserWithHashedPass(User):
+    hashed_password: str
