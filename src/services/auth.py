@@ -40,3 +40,8 @@ class AuthServices:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail={"status": "Error - неверный токен"}
             )
+        except jwt.exceptions.ExpiredSignatureError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail={"status": "Error - токен просрочен"}
+            )

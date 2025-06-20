@@ -120,8 +120,10 @@ async def delete_room(
     elif result == 404:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"status": "Error - NOT_FOUND"})
+            detail={"status": "Error - Номер не найден"}
+        )
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"status": "Error - BAD_REQUEST"})
+            detail={"status": "Error - Неправильный запрос"}
+        )
