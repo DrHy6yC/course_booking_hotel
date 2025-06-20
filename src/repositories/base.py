@@ -8,10 +8,13 @@ class BaseRepository:
     def __init__(self, session):
         self.session = session
 
-    async def get_all(self, **filter_by):
+    async def get_filter_by(self, **filter_by):
         query = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(query)
         return [self.schema.model_validate(obj=model, from_attributes=True) for model in result.scalars().all()]
+
+    async def get_all(self, *args, **kwargs):
+        return await self.get_filter_by()
 
     async def get_one_or_none(self, **filter_by):
         query = select(self.model).filter_by(**filter_by)
@@ -21,7 +24,6 @@ class BaseRepository:
             return None
         return self.schema.model_validate(obj=entity, from_attributes=True)
 
-
     async def add(
             self,
             model_data: BaseModel,
@@ -30,7 +32,6 @@ class BaseRepository:
         result = await self.session.execute(add_model_stmt)
         entity = result.scalars().one_or_none()
         return self.schema.model_validate(obj=entity, from_attributes=True)
-
 
     async def edit(
             self,
@@ -44,7 +45,6 @@ class BaseRepository:
             values(**model_data.model_dump(exclude_unset=exclude_unset))
         )
         await self.session.execute(edit_model_stmt)
-
 
     async def delete(
             self,

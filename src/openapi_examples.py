@@ -50,7 +50,6 @@ hotel_dubai = Example(
 room_standart = Example(
     summary="Стандарт",
     value={
-        "hotel_id": "5",
         "title": "Номер стандарт",
         "description": "" ,
         "price": "2500",
