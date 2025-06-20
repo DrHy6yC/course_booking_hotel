@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Body, HTTPException, Query, status
 
-
 from src.api.dependencies import PaginationDep
 from src.database import async_session_maker
+from src.openapi_examples import hotel_sochi, hotel_dubai
 from src.repositories.hotels import HotelsRepository
 from src.schemas.hotel import HotelAdd, HotelPatch
+
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
 
@@ -32,11 +33,11 @@ async def get_hotels(
 
 
 @router.get(
-    path="/{hotels_id}",
+    path="/{hotel_id}",
     summary="Получение информации по одному отелю",
     description="Можно получить один отель по айди"
 )
-async def get_hotel(hotel_id: int):
+async def get_hotel_by_id(hotel_id: int):
     async with async_session_maker() as session:
         return await HotelsRepository(session).get_one_or_none(id=hotel_id)
 
@@ -49,20 +50,8 @@ async def get_hotel(hotel_id: int):
 async def create_hotel(
         hotel_data: HotelAdd = Body(
             openapi_examples={
-                "1": {
-                        "summary": "Сочи",
-                        "value": {
-                            "title": "Отель Сочи 5 звезд у моря",
-                            "location": "Сочи, ул Моря, д, 12",
-                        }
-                    },
-                "2": {
-                        "summary": "Дубай",
-                        "value": {
-                            "title": "Отель Дубай У фонтана",
-                            "location": "Дубай, ул Фонтана, д, 12",
-                        }
-                    },
+                "1": hotel_sochi,
+                "2": hotel_dubai,
             }
         )
 ):
@@ -74,30 +63,35 @@ async def create_hotel(
 
 @router.put(
     path="/{hotel_id}",
-    summary="Изменение уже существующего отеля по id",
-    description="Необходимо ввести все параметры",
+    summary="Изменить отель по id",
+    description="Изменить все параметры отеля по id",
 )
-async def all_hotel_changes(
+async def put_hotel(
         hotel_id: int,
         hotel_data: HotelAdd,
 ):
     async with async_session_maker() as session:
-        await HotelsRepository(session).edit(id=hotel_id,model_data=hotel_data)
+        await HotelsRepository(session).edit(
+            id=hotel_id,
+            model_data=hotel_data)
         await session.commit()
     return {"status": "OK"}
 
 
 @router.patch(
     path="/{hotel_id}",
-    summary="Изменение уже существующего отеля по id",
-    description="Можно изменить любой из параметров, а так же все параметры",
+    summary="Изменить отель по id",
+    description="Изменить некоторые параметры отеля по id",
 )
-async def hotel_changes(
+async def edit_hotel(
         hotel_id: int,
         hotel_data: HotelPatch
 ):
     async with async_session_maker() as session:
-        await HotelsRepository(session).edit(id=hotel_id, model_data=hotel_data, exclude_unset=True)
+        await HotelsRepository(session).edit(
+            id=hotel_id,
+            model_data=hotel_data,
+            exclude_unset=True)
         await session.commit()
     return {"status": "OK"}
 

@@ -7,6 +7,7 @@ from src.repositories.users import UsersRepository
 from src.schemas.user import User, UserAdd, UserLogin, UserRequestAdd
 from src.services.auth import AuthServices
 
+
 router = APIRouter(prefix="/auth", tags=["Авторизация и аутентификайия"])
 
 
