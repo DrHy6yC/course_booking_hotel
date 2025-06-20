@@ -15,14 +15,13 @@ router = APIRouter(prefix="/bookings", tags=["Бронирование номе�
 async def create_bookings(
         db: DBDep,
         user_id: UserIdDep,
-        room_id: int,
         booking_data: BookingRequestAdd,
 ):
-    room = await db.rooms.get_one_or_none(id=room_id)
-    _booking_data = BookingAdd(room_id=room_id, user_id=user_id, price=room.price, **booking_data.model_dump())
-    await db.bookings.add(_booking_data)
+    room = await db.rooms.get_one_or_none(id=booking_data.room_id)
+    _booking_data = BookingAdd(user_id=user_id, price=room.price, **booking_data.model_dump())
+    result = await db.bookings.add(_booking_data)
     await db.commit()
-    return  {"status": "OK"}
+    return  {"status": "OK", "booking": result}
 
 
 # @router.post(
