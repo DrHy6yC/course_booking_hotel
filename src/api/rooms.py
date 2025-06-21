@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Body, HTTPException, Path, status
+from datetime import date, timedelta
+
+from fastapi import APIRouter, Body, HTTPException, Path, Query, status
 
 from src.api.dependencies import DBDep
-from src.openapi_examples import room_standart
+from src.openapi_examples import room_standard
 from src.schemas.room import RoomAdd, RoomAddRequest, RoomPatch, RoomPatchRequest
 
 
@@ -17,7 +19,21 @@ async def get_rooms(
         db: DBDep,
         hotel_id: int = Path(description="Айди отеля"),
 ):
-    return await db.rooms.get_filter_by(hotel_id=hotel_id)
+    return await db.rooms.get_filtered(hotel_id=hotel_id)
+
+
+@router.get(
+    path="/unoccupied",
+    summary="Доступные номера за период",
+    description=""
+)
+async def get_unoccupied_rooms(
+        hotel_id: int,
+        db: DBDep,
+        date_from: date = Query(example=date.today()),
+        date_to: date = Query(example=date.today()+timedelta(days=1)),
+):
+    return await db.rooms.get_filter_by_time(hotel_id=hotel_id,date_from=date_from, date_to=date_to)
 
 
 @router.post(
@@ -30,7 +46,7 @@ async def create_room(
         hotel_id: int = Path(description="Айди отеля"),
         room_data: RoomAddRequest = Body(
             openapi_examples={
-                "1": room_standart,
+                "1": room_standard,
             }
         )
 ):
@@ -64,7 +80,7 @@ async def put_room(
         room_id: int = Path(description="Айди номера"),
         room_data: RoomAddRequest = Body(
             openapi_examples={
-                "1": room_standart,
+                "1": room_standard,
             }
         )
 ):
@@ -88,7 +104,7 @@ async def edit_room(
         room_id: int = Path(description="Айди номера"),
         room_data: RoomPatchRequest = Body(
             openapi_examples={
-                "1": room_standart,
+                "1": room_standard,
             }
         )
 ):

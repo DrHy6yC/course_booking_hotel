@@ -6,7 +6,7 @@ from src.schemas.user import User, UserAdd, UserLogin, UserRequestAdd
 from src.services.auth import AuthServices
 
 
-router = APIRouter(prefix="/auth", tags=["Авторизация и аутентификайия"])
+router = APIRouter(prefix="/auth", tags=["Авторизация и аутентификация"])
 
 
 @router.post(
@@ -39,7 +39,7 @@ async def register_user(
         print(error)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail={"status": "Error - Пользователь с такими данными уже сущестует"},
+            detail={"status": "Error - Пользователь с такими данными уже существует"},
         )
 
 
@@ -88,7 +88,7 @@ async def get_me(
 
 @router.post(
     path="/logout",
-    summary="Разлогиниться",
+    summary="Выйти",
     description="Выйти из под пользователя"
 )
 async def logout_user(response: Response):

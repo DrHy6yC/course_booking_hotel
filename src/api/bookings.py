@@ -18,6 +18,7 @@ async def get_bookings_me(
     return await db.bookings.get_all()
 
 
+
 @router.get(
     path="/me",
     summary="Получить список забронированных номеров",

@@ -47,7 +47,7 @@ hotel_dubai = Example(
     }
 )
 
-room_standart = Example(
+room_standard = Example(
     summary="Стандарт",
     value={
         "title": "Номер стандарт",

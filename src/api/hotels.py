@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from fastapi import APIRouter, Body, HTTPException, Query, status
 
 from src.api.dependencies import DBDep, PaginationDep
@@ -10,7 +12,7 @@ router = APIRouter(prefix="/hotels", tags=["Отели"])
 
 @router.get(
     path="",
-    summary="Получение списка отелей",
+    summary="Получение списка всех существующих отелей",
     description="Можно получить список по локации или по названию отеля",
 )
 async def get_hotels(
@@ -28,6 +30,19 @@ async def get_hotels(
         limit=limit,
         offset=offset
     )
+
+
+@router.get(
+    path="/unoccupied",
+    summary="Получение списка отелей",
+    description="Получение списка отелей доступных для бронирования за период",
+)
+async def get_hotels_unoccupied(
+        db: DBDep,
+        date_from: date = Query(example=date.today()),
+        date_to: date = Query(example=date.today() + timedelta(days=1)),
+):
+    return await db.hotels.get_filtered_by_time(date_from=date_from, date_to=date_to)
 
 
 @router.get(
