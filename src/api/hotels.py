@@ -39,10 +39,19 @@ async def get_hotels(
 )
 async def get_hotels_unoccupied(
         db: DBDep,
+        pagination: PaginationDep,
         date_from: date = Query(example=date.today()),
         date_to: date = Query(example=date.today() + timedelta(days=1)),
 ):
-    return await db.hotels.get_filtered_by_time(date_from=date_from, date_to=date_to)
+    per_page = pagination.per_page or 5
+    limit = per_page
+    offset = per_page * (pagination.page - 1)
+    return await db.hotels.get_filtered_by_time(
+        date_from=date_from,
+        date_to=date_to,
+        limit=limit,
+        offset=offset
+    )
 
 
 @router.get(
