@@ -1,8 +1,8 @@
 """Добавление таблицы удобств в номерах
 
-Revision ID: 697355229137
+Revision ID: 2e23484c9699
 Revises: b4d9c1693a30
-Create Date: 2025-06-21 20:03:02.162253
+Create Date: 2025-06-21 22:14:23.122842
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "697355229137"
+revision: str = "2e23484c9699"
 down_revision: Union[str, None] = "b4d9c1693a30"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -29,14 +29,14 @@ def upgrade() -> None:
     op.create_table(
         "rooms_facilities",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("rooms_id", sa.Integer(), nullable=False),
-        sa.Column("facilities_id", sa.Integer(), nullable=False),
+        sa.Column("room_id", sa.Integer(), nullable=False),
+        sa.Column("facility_id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
-            ["facilities_id"],
+            ["facility_id"],
             ["facilities.id"],
         ),
         sa.ForeignKeyConstraint(
-            ["rooms_id"],
+            ["room_id"],
             ["rooms.id"],
         ),
         sa.PrimaryKeyConstraint("id"),

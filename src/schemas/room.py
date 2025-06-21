@@ -1,19 +1,23 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
-
-class RoomAddRequest(BaseModel):
+class RoomBase(BaseModel):
     title: str
     description: str | None = Field(None)
     price: int
     quantity: int
 
 
-class RoomAdd(RoomAddRequest):
+class RoomAddRequest(RoomBase):
+    facilities_ids: list[int] | None = Field(None)
+
+
+class RoomAdd(RoomBase):
     hotel_id: int
 
 
 class Room(RoomAdd):
     id: int
+
 
 class RoomPatchRequest(BaseModel):
     title: str | None = Field(None)

@@ -18,8 +18,8 @@ async def get_facilities(db: DBDep):
 
 @router.post(
     path="",
-    summary="",
-    description="",
+    summary="Добавление нового удобства",
+    description="Добавление нового удобства в БД",
 )
 async def create_facilities(db: DBDep, data_facilities: FacilityAdd):
     result = await db.facilities.add(data_facilities)

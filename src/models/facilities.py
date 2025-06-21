@@ -11,9 +11,9 @@ class FacilitiesORM(BaseORM):
     title: Mapped[str] = mapped_column(String(length=100))
 
 
-class RoomsFacilities(BaseORM):
+class RoomsFacilitiesORM(BaseORM):
     __tablename__ = "rooms_facilities"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    rooms_id: Mapped[int] = mapped_column(ForeignKey(column="rooms.id"))
-    facilities_id: Mapped[int] = mapped_column(ForeignKey(column="facilities.id"))
+    room_id: Mapped[int] = mapped_column(ForeignKey(column="rooms.id"))
+    facility_id: Mapped[int] = mapped_column(ForeignKey(column="facilities.id"))

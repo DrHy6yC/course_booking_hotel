@@ -4,6 +4,7 @@ from fastapi import APIRouter, Body, HTTPException, Path, Query, status
 
 from src.api.dependencies import DBDep
 from src.openapi_examples import room_standard
+from src.schemas.facility import RoomFacilityAdd
 from src.schemas.room import RoomAdd, RoomAddRequest, RoomPatch, RoomPatchRequest
 
 
@@ -50,10 +51,12 @@ async def create_room(
             }
         )
 ):
-    _room_data = RoomAdd(hotel_id=hotel_id,**room_data.model_dump())
-    result = await db.rooms.add(_room_data)
+    _room_data = RoomAdd(hotel_id=hotel_id,**room_data.model_dump(exclude={"facilities_ids"}))
+    room = await db.rooms.add(_room_data)
+    rooms_facilities_data = [RoomFacilityAdd(room_id=room.id,facility_id=f_id) for f_id in room_data.facilities_ids]
+    await db.rooms_facilities.add_bulk(rooms_facilities_data)
     await db.commit()
-    return {"status": "OK", "room": result}
+    return {"status": "OK", "room": room}
 
 
 @router.get(

@@ -54,5 +54,8 @@ room_standard = Example(
         "description": "" ,
         "price": "2500",
         "quantity": "4",
+        "facilities_ids": [
+            
+        ]
     }
 )
