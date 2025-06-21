@@ -18,15 +18,22 @@ class HotelsRepository(BaseRepository):
             self,
             date_from: date,
             date_to: date,
+            title,
+            location,
             limit: int,
             offset: int,
-    ):
+    )-> list[Hotel]:
         id_unoccupied_rooms = unoccupied_rooms(date_from=date_from, date_to=date_to)
         id_unoccupied_hotels = (
             select(RoomsORM.hotel_id)
             .select_from(RoomsORM)
             .filter(RoomsORM.id.in_(id_unoccupied_rooms))
         )
+        # filter_hotel = (HotelsORM.id.in_(id_unoccupied_hotels),)
+        # if title:
+        #     filter_hotel = filter_hotel + (func.lower(HotelsORM.title).contains(title.strip().lower()),)
+        # if location:
+        #     filter_hotel = filter_hotel + (func.lower(HotelsORM.location).contains(location.strip().lower()),)
         return await self.get_filtered(
             HotelsORM.id.in_(id_unoccupied_hotels),
             limit=limit,

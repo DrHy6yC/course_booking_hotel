@@ -42,6 +42,8 @@ async def get_hotels_unoccupied(
         pagination: PaginationDep,
         date_from: date = Query(example=date.today()),
         date_to: date = Query(example=date.today() + timedelta(days=1)),
+        title: str | None = Query(default=None, description="Название отеля"),
+        location: str | None = Query(default=None, description="Адрес отеля"),
 ):
     per_page = pagination.per_page or 5
     limit = per_page
@@ -49,8 +51,10 @@ async def get_hotels_unoccupied(
     return await db.hotels.get_filtered_by_time(
         date_from=date_from,
         date_to=date_to,
+        title=title,
+        location=location,
         limit=limit,
-        offset=offset
+        offset=offset,
     )
 
 
