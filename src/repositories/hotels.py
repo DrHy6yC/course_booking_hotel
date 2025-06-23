@@ -5,13 +5,14 @@ from sqlalchemy import func, select
 from src.models.hotels import HotelsORM
 from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
+from src.repositories.mappers.mappers import HotelDataMapper
 from src.repositories.utils import unoccupied_rooms
 from src.schemas.hotel import Hotel
 
 
 class HotelsRepository(BaseRepository):
     model = HotelsORM
-    schema = Hotel
+    mapper = HotelDataMapper
 
 
     async def get_filtered_by_time(
@@ -29,11 +30,16 @@ class HotelsRepository(BaseRepository):
             .select_from(RoomsORM)
             .filter(RoomsORM.id.in_(id_unoccupied_rooms))
         )
-        # filter_hotel = (HotelsORM.id.in_(id_unoccupied_hotels),)
-        # if title:
-        #     filter_hotel = filter_hotel + (func.lower(HotelsORM.title).contains(title.strip().lower()),)
-        # if location:
-        #     filter_hotel = filter_hotel + (func.lower(HotelsORM.location).contains(location.strip().lower()),)
+        if title:
+            id_unoccupied_hotels = id_unoccupied_hotels.filter(func.lower(HotelsORM.title).contains(title.strip().lower()))
+        if location:
+            id_unoccupied_hotels = id_unoccupied_hotels.filter(func.lower(HotelsORM.location).contains(location.strip().lower()))
+        id_unoccupied_hotels = (
+            id_unoccupied_hotels.
+            limit(limit).
+            offset(offset)
+        )
+
         return await self.get_filtered(
             HotelsORM.id.in_(id_unoccupied_hotels),
             limit=limit,
@@ -59,4 +65,4 @@ class HotelsRepository(BaseRepository):
             offset(offset)
         )
         result = await self.session.execute(query)
-        return [Hotel.model_validate(obj=hotel, from_attributes=True) for hotel in result.scalars().all()]
+        return [self.mapper.map_to_domain_entity(hotel) for hotel in result.scalars().all()]
