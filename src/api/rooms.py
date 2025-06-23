@@ -93,8 +93,24 @@ async def put_room(
         hotel_id=hotel_id,
         model_data=_room_data,
     )
+    new_ids = set(room_data.facilities_ids)
+    now_rooms_facilities = await db.rooms_facilities.get_filtered(room_id=room_id)
+    now_ids = set([r_f.facility_id for r_f in now_rooms_facilities])
+    delete_ids = list(now_ids - new_ids)
+    create_ids = list(new_ids - now_ids)
+    print(f"Новые: {new_ids}\n"
+          f"Существующие: {now_ids}\n"
+          f"Удалить: {delete_ids}\n"
+          f"Добавить: {create_ids}")
+    if delete_ids:
+        for f_id in delete_ids:
+            await db.rooms_facilities.delete(facility_id=f_id, room_id=room_id)
+    if create_ids:
+        rooms_facilities_data_add = [RoomFacilityAdd(room_id=room_id, facility_id=f_id) for f_id in create_ids]
+        await db.rooms_facilities.add_bulk(rooms_facilities_data_add)
     await db.commit()
     return {"status": "OK"}
+
 
 @router.patch(
     path="/{room_id}",
@@ -118,6 +134,21 @@ async def edit_room(
         hotel_id=hotel_id,
         exclude_unset=True,
     )
+    new_ids = set(room_data.facilities_ids)
+    now_rooms_facilities = await db.rooms_facilities.get_filtered(room_id=room_id)
+    now_ids = set([r_f.facility_id for r_f in now_rooms_facilities])
+    delete_ids = list(now_ids - new_ids)
+    create_ids = list(new_ids - now_ids)
+    print(f"Новые: {new_ids}\n"
+          f"Существующие: {now_ids}\n"
+          f"Удалить: {delete_ids}\n"
+          f"Добавить: {create_ids}")
+    if delete_ids:
+        for f_id in delete_ids:
+            await db.rooms_facilities.delete(facility_id=f_id, room_id=room_id)
+    if create_ids:
+        rooms_facilities_data_add = [RoomFacilityAdd(room_id=room_id, facility_id=f_id) for f_id in create_ids]
+        await db.rooms_facilities.add_bulk(rooms_facilities_data_add)
     await db.commit()
     return {"status": "OK"}
 

@@ -19,12 +19,16 @@ class Room(RoomAdd):
     id: int
 
 
-class RoomPatchRequest(BaseModel):
+class RoomPatchBase(BaseModel):
     title: str | None = Field(None)
     description: str | None = Field(None)
     price: int | None = Field(None)
     quantity: int | None = Field(None)
 
 
-class RoomPatch(RoomPatchRequest):
+class RoomPatchRequest(RoomPatchBase):
+    facilities_ids: list[int] | None = Field(None)
+
+
+class RoomPatch(RoomPatchBase):
     hotel_id: int | None = Field(None)

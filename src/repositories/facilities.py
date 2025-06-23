@@ -11,3 +11,4 @@ class FacilitiesRepository(BaseRepository):
 class RoomsFacilitiesRepository(BaseRepository):
     model = RoomsFacilitiesORM
     schema = RoomFacility
+
