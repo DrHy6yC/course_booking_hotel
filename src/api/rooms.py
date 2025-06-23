@@ -69,7 +69,7 @@ async def get_room_by_id(
         hotel_id: int = Path(description="Айди отеля"),
         room_id: int = Path(description="Айди номера"),
 ):
-    return await db.rooms.get_one_or_none(id=room_id, hotel_id=hotel_id,)
+    return await db.rooms.get_one_or_none_with_rels(id=room_id, hotel_id=hotel_id,)
 
 
 @router.put(
