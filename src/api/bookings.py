@@ -28,7 +28,7 @@ async def get_bookings_me(
         db: DBDep,
         user_id: UserIdDep
 ):
-    return await db.bookings.get_filter_by(user_id=user_id)
+    return await db.bookings.get_filtered(user_id=user_id)
 
 
 @router.post(

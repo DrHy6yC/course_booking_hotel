@@ -55,3 +55,22 @@ def unoccupied_rooms(
 
     print(query.compile(bind=engine, compile_kwargs={"literal_binds": True}))
     return query
+
+def add_pagination(
+        model,
+        query,
+        limit: int,
+        offset: int,
+        title: str | None = None,
+        location: str | None = None,
+):
+    if title:
+        query = query.filter(func.lower(model.title).contains(title.strip().lower()))
+    if location:
+        query = query.filter(func.lower(model.location).contains(location.strip().lower()))
+    query = (
+        query.
+        limit(limit).
+        offset(offset)
+    )
+    return query

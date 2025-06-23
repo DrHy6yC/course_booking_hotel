@@ -6,7 +6,7 @@ from src.models.hotels import HotelsORM
 from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
 from src.repositories.mappers.mappers import HotelDataMapper
-from src.repositories.utils import unoccupied_rooms
+from src.repositories.utils import unoccupied_rooms, add_pagination
 from src.schemas.hotel import Hotel
 
 
@@ -30,16 +30,14 @@ class HotelsRepository(BaseRepository):
             .select_from(RoomsORM)
             .filter(RoomsORM.id.in_(id_unoccupied_rooms))
         )
-        if title:
-            id_unoccupied_hotels = id_unoccupied_hotels.filter(func.lower(HotelsORM.title).contains(title.strip().lower()))
-        if location:
-            id_unoccupied_hotels = id_unoccupied_hotels.filter(func.lower(HotelsORM.location).contains(location.strip().lower()))
-        id_unoccupied_hotels = (
-            id_unoccupied_hotels.
-            limit(limit).
-            offset(offset)
+        id_unoccupied_hotels = add_pagination(
+            model=self.model,
+            query=id_unoccupied_hotels,
+            title=title,
+            location=location,
+            limit=limit,
+            offset=offset,
         )
-
         return await self.get_filtered(
             HotelsORM.id.in_(id_unoccupied_hotels),
             limit=limit,
@@ -55,14 +53,13 @@ class HotelsRepository(BaseRepository):
             offset,
     ) -> list[Hotel]:
         query = select(HotelsORM)
-        if title:
-            query = query.filter(func.lower(HotelsORM.title).contains(title.strip().lower()))
-        if location:
-            query = query.filter(func.lower(HotelsORM.location).contains(location.strip().lower()))
-        query = (
-            query.
-            limit(limit).
-            offset(offset)
+        query = add_pagination(
+            model=self.model,
+            query=query,
+            title=title,
+            location=location,
+            limit=limit,
+            offset=offset,
         )
         result = await self.session.execute(query)
         return [self.mapper.map_to_domain_entity(hotel) for hotel in result.scalars().all()]
