@@ -1,7 +1,7 @@
 from datetime import date
 
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload,joinedload
 
 from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
@@ -27,3 +27,15 @@ class RoomsRepository(BaseRepository):
         )
         result = await self.session.execute(query)
         return [RoomWithRels.model_validate(obj=model, from_attributes=True) for model in result.scalars().all()]
+
+    async def get_one_or_none(self, **filter_by):
+        query = (
+            select(self.model)
+            .options(joinedload(self.model.facilities))
+            .filter_by(**filter_by)
+        )
+        result = await self.session.execute(query)
+        entity = result.unique().scalars().one_or_none()
+        if entity is None:
+            return None
+        return RoomWithRels.model_validate(obj=entity, from_attributes=True)
