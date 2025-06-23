@@ -1,4 +1,7 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
+
+from src.schemas.facility import Facility
+
 
 class RoomBase(BaseModel):
     title: str
@@ -17,6 +20,10 @@ class RoomAdd(RoomBase):
 
 class Room(RoomAdd):
     id: int
+
+
+class RoomWithRels(Room):
+    facilities: list[Facility]
 
 
 class RoomPatchBase(BaseModel):

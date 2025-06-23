@@ -1,9 +1,12 @@
 from datetime import date
 
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
+
 from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
 from src.repositories.utils import unoccupied_rooms
-from src.schemas.room import Room
+from src.schemas.room import Room, RoomWithRels
 
 
 class RoomsRepository(BaseRepository):
@@ -16,8 +19,11 @@ class RoomsRepository(BaseRepository):
             date_from: date,
             date_to: date
     ):
-        return await self.get_filtered(
-            RoomsORM.id.in_(
-                unoccupied_rooms(hotel_id=hotel_id, date_from=date_from, date_to=date_to)
-            )
+        filter_id = unoccupied_rooms(hotel_id=hotel_id, date_from=date_from, date_to=date_to)
+        query = (
+            select(self.model)
+            .options(selectinload(self.model.facilities))
+            .filter(RoomsORM.id.in_(filter_id))
         )
+        result = await self.session.execute(query)
+        return [RoomWithRels.model_validate(obj=model, from_attributes=True) for model in result.scalars().all()]
