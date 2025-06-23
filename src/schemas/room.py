@@ -8,7 +8,7 @@ class RoomBase(BaseModel):
 
 
 class RoomAddRequest(RoomBase):
-    facilities_ids: list[int] | None = Field(None)
+    facilities_ids: list[int] | None = []
 
 
 class RoomAdd(RoomBase):
@@ -27,7 +27,7 @@ class RoomPatchBase(BaseModel):
 
 
 class RoomPatchRequest(RoomPatchBase):
-    facilities_ids: list[int] | None = Field(None)
+    facilities_ids: list[int] | None = []
 
 
 class RoomPatch(RoomPatchBase):
