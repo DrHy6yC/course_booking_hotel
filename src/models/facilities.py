@@ -1,7 +1,7 @@
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.database import BaseORM
+from src.connectors.database_init import BaseORM
 
 
 class FacilitiesORM(BaseORM):

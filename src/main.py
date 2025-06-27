@@ -15,7 +15,7 @@ from src.api.bookings import router as router_bookings
 from src.api.facilities import router as router_facilities
 from src.api.hotels import router as router_hotels
 from src.api.rooms import router as router_rooms
-from src.init import redis_manager
+from src.connectors.redis_init import redis_manager
 
 
 
