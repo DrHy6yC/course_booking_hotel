@@ -14,7 +14,7 @@ def sleep_task():
     print("Задача выполнена")
 
 
-@celery_instance.task
+
 def resize_image(image_path: str):
     sizes = [1000, 500, 200]
     output_folder = 'src/static/images'
@@ -35,6 +35,10 @@ def resize_image(image_path: str):
 
     print(f"Изображение сохранено в следующих размерах: {sizes} в папке {output_folder}")
 
+
+@celery_instance.task
+def resize_image_celery(image_path: str):
+    resize_image(image_path)
 
 async def get_bookings_with_today_checkin_helper():
     print("Я запускаю поиск бронирований")
