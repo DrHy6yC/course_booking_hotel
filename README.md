@@ -56,5 +56,12 @@ async  with async_session_maker() as session:
 ### 3. Просмотр запущенных контейнеров:
 ```docker ps -a```
 ***
+**
+##  Команды celeru
+### 1. Запуск worker:
+```celery -A src.tasks.celery_app:celery_instance worker -l INFO --pool=solo```
+### 2 Запуск beat:
+```celery -A src.tasks.celery_app:celery_instance beat -l INFO --pool=solo```
+***
 
 

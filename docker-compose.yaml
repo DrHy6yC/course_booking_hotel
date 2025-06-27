@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_DB: ${PG_DB_NAME}
     volumes:
-      - ./postgres-data:${PG_DATA}
+      - ./postgres_data:${PG_DATA}
     ports:
       - "${PG_PORT}:5432"
     restart: unless-stopped
@@ -17,27 +17,13 @@ services:
   redis:
       image: redis:8.2-m01-alpine3.22
       container_name: redis_cache
-      environment:
-        REDIS_PASSWORD: ${REDIS_PASSWORD}
-        REDIS_USER: ${REDIS_USER}
-        REDIS_USER_PASSWORD: ${REDIS_USER_PASSWORD}
       ports:
         - "${REDIS_PORT}:6379"
       volumes:
-        - ./redisdata:/data
-      command: >
-        sh -c '
-          mkdir -p /usr/local/etc/redis &&
-          echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
-          echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf &&
-          echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
-          echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf &&
-          echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
-          echo "user $REDIS_USER on >$REDIS_USER_PASSWORD ~* +@all" >> /usr/local/etc/redis/users.acl &&
-          redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
-        '
+        - ./redis_data:/data
+      command: redis-server --save 60 1 --loglevel warning
       healthcheck:
-        test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+        test: ["CMD", "redis-cli", "ping"]
         interval: 30s
         timeout: 10s
         retries: 5
