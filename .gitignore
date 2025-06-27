@@ -4,3 +4,9 @@ course_booking_hotel/.idea
 /postgres-data/
 .env
 /.idea
+/redisdata/
+/postgres_data/
+/redis_data/
+/celerybeat-schedule.bak
+/celerybeat-schedule.dat
+/celerybeat-schedule.dir

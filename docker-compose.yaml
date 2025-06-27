@@ -7,13 +7,31 @@ services:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_DB: ${PG_DB_NAME}
     volumes:
-      - ./postgres-data:${PG_DATA}
+      - ./postgres_data:${PG_DATA}
     ports:
       - "${PG_PORT}:5432"
     restart: unless-stopped
     networks:
       - network_course
 
+  redis:
+      image: redis:8.2-m01-alpine3.22
+      container_name: redis_cache
+      ports:
+        - "${REDIS_PORT}:6379"
+      volumes:
+        - ./redis_data:/data
+      command: redis-server --save 60 1 --loglevel warning
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      restart: unless-stopped
+      tty: true
+      stdin_open: true
+      networks:
+        - network_course
 
 networks:
   network_course:

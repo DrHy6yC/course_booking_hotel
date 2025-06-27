@@ -2,7 +2,7 @@ from datetime import date
 
 from sqlalchemy import func, select
 
-from src.database import engine
+from src.connectors.database_init import engine
 from src.models.bookings import BookingsORM
 from src.models.rooms import RoomsORM
 

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String
 
-from src.database import BaseORM
+from src.connectors.database_init import BaseORM
 
 
 class HotelsORM(BaseORM):
