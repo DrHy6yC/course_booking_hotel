@@ -10,3 +10,4 @@ celery_instance = Celery(
         "src.tasks.tasks",
     ],
 )
+celery_instance.conf.broker_connection_retry_on_startup = True
