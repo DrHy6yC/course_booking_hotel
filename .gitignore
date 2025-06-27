@@ -4,3 +4,4 @@ course_booking_hotel/.idea
 /postgres-data/
 .env
 /.idea
+/redisdata/

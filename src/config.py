@@ -2,6 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # Настройки БД
     PG_VERSION: str
     PG_HOST: str
     PG_PORT: int
@@ -10,9 +11,17 @@ class Settings(BaseSettings):
     PG_DB_NAME: str
     PG_DATA: str
 
+    # Настройки токена авторизации
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTE: int
+
+    # Настройки Redis
+    REDIS_PASSWORD: str
+    REDIS_USER: str
+    REDIS_USER_PASSWORD: str
+    REDIS_PORT: int
+    REDIS_HOST: str
 
     @property
 
