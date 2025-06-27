@@ -5,3 +5,5 @@ course_booking_hotel/.idea
 .env
 /.idea
 /redisdata/
+/postgres_data/
+/redis_data/
