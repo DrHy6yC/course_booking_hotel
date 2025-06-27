@@ -11,3 +11,11 @@ celery_instance = Celery(
     ],
 )
 celery_instance.conf.broker_connection_retry_on_startup = True
+
+
+celery_instance.conf.beat_schedule = {
+    "beat_schedule": {
+        "task": "booking_today_checkin",
+        "schedule": 5,
+    }
+}
