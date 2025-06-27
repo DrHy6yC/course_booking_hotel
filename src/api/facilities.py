@@ -1,30 +1,15 @@
 from fastapi import APIRouter
-from fastapi_cache import KeyBuilder
 from fastapi_cache.decorator import cache
-from typing import Optional, Any, Dict, Tuple, Union, Awaitable
-from fastapi import Request, Response
 
 from src.api.dependencies import DBDep
+from src.custom_class import KeyBuilderCustom
 from src.schemas.facility import FacilityAdd
 
 
 router = APIRouter(prefix="/facilities", tags=["Услуги"])
 
 
-class CustomKeyBuilder(KeyBuilder):
-    async def __call__(
-            self,
-            function: Any,
-            namespace: str = "",
-            request: Optional[Request] = None,
-            response: Optional[Response] = None,
-            *args,
-            **kwargs,
-    ) -> str:
-        return ":all_facilities"
-
-
-custom_key_builder = CustomKeyBuilder()
+custom_key_builder = KeyBuilderCustom(my_key="all_facilities")
 
 @router.get(
     path="",
