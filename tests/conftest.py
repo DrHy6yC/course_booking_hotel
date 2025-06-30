@@ -4,9 +4,17 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 from src.config import settings
-from src.connectors.database_init import BaseORM, engine_null_pool
+from src.connectors.database_init import (
+    BaseORM,
+    async_session_maker_null_pool,
+    engine_null_pool,
+)
 from src.main import app
 from src.models import *
+from src.schemas.hotel import HotelAdd
+from src.schemas.facility import FacilityAdd
+from src.schemas.room import RoomAdd
+from src.utils.db_manager import DBManager
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -24,36 +32,23 @@ async def async_setup_db(check_test_mode):
 @pytest.fixture(scope="session", autouse=True)
 async def async_fill_db(async_setup_db):
     with open(file="tests/mock_hotels.json", mode="r", encoding="utf-8") as f_h:
-        data = json.load(f_h)
-        for hotel in data:
-            async with AsyncClient(
-                transport=ASGITransport(app=app), base_url="http://test.ru"
-            ) as ac:
-                result_hotel = await ac.post(url="/hotels", json=hotel)
-                assert result_hotel.status_code == 200
-                assert result_hotel
+        hotel_data = json.load(f_h)
 
-    with open(file="tests/mock_facilities.json", mode="r", encoding="utf-8") as f_h:
-        data = json.load(f_h)
-        for facility in data:
-            async with AsyncClient(
-                transport=ASGITransport(app=app), base_url="http://test.ru"
-            ) as ac:
-                result_facility = await ac.post(url="/facilities", json=facility)
-                assert result_facility.status_code == 200
-                assert result_facility
+    with open(file="tests/mock_facilities.json", mode="r", encoding="utf-8") as f_f:
+        facilities_data = json.load(f_f)
 
-    with open(file="tests/mock_rooms.json", mode="r", encoding="utf-8") as f_h:
-        data = json.load(f_h)
-        for room in data:
-            async with AsyncClient(
-                transport=ASGITransport(app=app), base_url="http://test.ru"
-            ) as ac:
-                result_room = await ac.post(
-                    url=f"/hotels/{room['hotel_id']}/rooms", json=room
-                )
-                assert result_room.status_code == 200
-                assert result_room
+    with open(file="tests/mock_rooms.json", mode="r", encoding="utf-8") as f_r:
+        room_data = json.load(f_r)
+
+    hotels = [HotelAdd.model_validate(hotel) for hotel in hotel_data]
+    facilities = [FacilityAdd.model_validate(facility) for facility in facilities_data]
+    rooms = [RoomAdd.model_validate(room) for room in room_data]
+
+    async with DBManager(session_factories=async_session_maker_null_pool) as db:
+        await db.hotels.add_bulk(hotels)
+        await db.facilities.add_bulk(facilities)
+        await db.rooms.add_bulk(rooms)
+        await db.commit()
 
 
 @pytest.fixture(scope="session", autouse=True)
