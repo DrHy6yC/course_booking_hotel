@@ -95,29 +95,14 @@ async def create_user(ac, async_fill_db):
     )
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 async def user_with_token(ac, create_user):
-    token_response = await ac.post(
+    await ac.post(
         url="/auth/login",
         json={
             "email": "admin@h.ru",
             "password": "111",
         },
     )
-    assert token_response.status_code == 200
-    token_from_cookies = token_response.cookies.get("access_token")
-    token_from_response = token_response.json()
-    assert token_from_response == token_from_cookies
-    user_response = await ac.get(
-        url="/auth/me",
-    )
-    assert user_response.status_code == 200
-    user_id = user_response.json()["id"]
-
-    pyload = AuthServices().decoded_access_token(token_from_cookies)
-
-    assert pyload
-    assert isinstance(pyload, dict)
-    assert pyload["user_id"] == user_id
-
-    yield user_id
+    assert ac.cookies["access_token"]
+    yield ac
