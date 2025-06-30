@@ -1,6 +1,5 @@
 from src.repositories.bookings import BookingsRepository
-from src.repositories.facilities import (FacilitiesRepository,
-                                         RoomsFacilitiesRepository)
+from src.repositories.facilities import FacilitiesRepository, RoomsFacilitiesRepository
 from src.repositories.hotels import HotelsRepository
 from src.repositories.rooms import RoomsRepository
 from src.repositories.users import UsersRepository
@@ -28,3 +27,6 @@ class DBManager:
 
     async def commit(self):
         await self.session.commit()
+
+    async def rollback(self):
+        await self.session.rollback()
