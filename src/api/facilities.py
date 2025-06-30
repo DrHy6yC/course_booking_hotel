@@ -29,4 +29,4 @@ async def get_facilities(db: DBDep):
 async def create_facilities(db: DBDep, data_facilities: FacilityAdd):
     result = await db.facilities.add(data_facilities)
     await db.commit()
-    return {"status": "OK", "facilities": result}
+    return {"status": "OK", "facility": result}
