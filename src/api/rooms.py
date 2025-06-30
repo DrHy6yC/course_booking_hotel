@@ -1,13 +1,12 @@
-from datetime import date, timedelta
+from datetime import date
 
 from fastapi import APIRouter, Body, HTTPException, Path, Query, status
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import DBDep
-from src.openapi_examples import room_standard
+from src.openapi_examples import date_today, date_tomorrow, room_standard
 from src.schemas.facility import RoomFacilityAdd
-from src.schemas.room import (RoomAdd, RoomAddRequest, RoomPatch,
-                              RoomPatchRequest)
+from src.schemas.room import RoomAdd, RoomAddRequest, RoomPatch, RoomPatchRequest
 
 router = APIRouter(prefix="/hotels/{hotel_id}/rooms", tags=["Номера"])
 
@@ -30,8 +29,8 @@ async def get_rooms(
 async def get_unoccupied_rooms(
     hotel_id: int,
     db: DBDep,
-    date_from: date = Query(example=date.today()),
-    date_to: date = Query(example=date.today() + timedelta(days=1)),
+    date_from: date = Query(openapi_examples=date_today),
+    date_to: date = Query(openapi_examples=date_tomorrow),
 ):
     return await db.rooms.get_filter_by_time(
         hotel_id=hotel_id, date_from=date_from, date_to=date_to

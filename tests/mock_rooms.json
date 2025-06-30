@@ -1,0 +1,170 @@
+[
+  {
+    "title": "Номер стандарт",
+    "description": "Простой, но комфортный номер с базовыми удобствами.",
+    "price": 2500,
+    "quantity": 4,
+    "facilities_ids": [1, 5],
+    "hotel_id": 1
+  },
+  {
+    "title": "Люкс с видом на море",
+    "description": "Роскошный номер с балконом и панорамным видом.",
+    "price": 7500,
+    "quantity": 2,
+    "facilities_ids": [1, 2, 3, 5, 7],
+    "hotel_id": 1
+  },
+  {
+    "title": "Номер семейный",
+    "description": "Две комнаты, детская зона, подходящий для семьи.",
+    "price": 5000,
+    "quantity": 3,
+    "facilities_ids": [1, 5, 10, 11],
+    "hotel_id": 1
+  },
+  {
+    "title": "Номер комфорт",
+    "description": "Уютный номер с двуспальной кроватью и Wi-Fi.",
+    "price": 3200,
+    "quantity": 5,
+    "facilities_ids": [1, 4, 5],
+    "hotel_id": 2
+  },
+  {
+    "title": "Номер бизнес-класса",
+    "description": "Оснащённое рабочее место и быстрый интернет.",
+    "price": 4000,
+    "quantity": 2,
+    "facilities_ids": [1, 4, 6],
+    "hotel_id": 2
+  },
+  {
+    "title": "Пентхаус с террасой",
+    "description": "Эксклюзивный номер на последнем этаже.",
+    "price": 12000,
+    "quantity": 1,
+    "facilities_ids": [1, 3, 5, 7, 9],
+    "hotel_id": 3
+  },
+  {
+    "title": "Номер с мини-кухней",
+    "description": "Идеален для длительного проживания.",
+    "price": 4800,
+    "quantity": 3,
+    "facilities_ids": [1, 5, 12],
+    "hotel_id": 3
+  },
+  {
+    "title": "Эконом-номер",
+    "description": "Недорогой вариант для краткосрочного пребывания.",
+    "price": 1800,
+    "quantity": 6,
+    "facilities_ids": [1],
+    "hotel_id": 4
+  },
+  {
+    "title": "Комфорт+",
+    "description": "Улучшенный номер с кондиционером и парковкой.",
+    "price": 3300,
+    "quantity": 4,
+    "facilities_ids": [1, 5, 6, 8],
+    "hotel_id": 4
+  },
+  {
+    "title": "Бутик-номер",
+    "description": "Стилизованный интерьер, уникальный дизайн.",
+    "price": 6700,
+    "quantity": 2,
+    "facilities_ids": [1, 3, 5, 9],
+    "hotel_id": 5
+  },
+  {
+    "title": "Номер на двоих",
+    "description": "Современный номер с видом на город.",
+    "price": 2900,
+    "quantity": 3,
+    "facilities_ids": [1, 5, 8],
+    "hotel_id": 5
+  },
+  {
+    "title": "Апартаменты с кухней",
+    "description": "Подходит для длительного проживания с удобствами.",
+    "price": 5600,
+    "quantity": 3,
+    "facilities_ids": [1, 5, 12],
+    "hotel_id": 6
+  },
+  {
+    "title": "Ретро-номер",
+    "description": "Оформление в классическом европейском стиле.",
+    "price": 3900,
+    "quantity": 2,
+    "facilities_ids": [1, 5, 9],
+    "hotel_id": 6
+  },
+  {
+    "title": "Номер у площади",
+    "description": "Рядом с достопримечательностями и транспортом.",
+    "price": 3500,
+    "quantity": 5,
+    "facilities_ids": [1, 5, 6, 13],
+    "hotel_id": 7
+  },
+  {
+    "title": "Номер для командировки",
+    "description": "Подходит для деловых поездок.",
+    "price": 3100,
+    "quantity": 4,
+    "facilities_ids": [1, 4, 5],
+    "hotel_id": 7
+  },
+  {
+    "title": "Горный номер стандарт",
+    "description": "С видом на горы, уютный интерьер.",
+    "price": 2700,
+    "quantity": 4,
+    "facilities_ids": [1, 5],
+    "hotel_id": 8
+  },
+  {
+    "title": "Люкс в горах",
+    "description": "Камин, панорамные окна, SPA.",
+    "price": 8800,
+    "quantity": 2,
+    "facilities_ids": [1, 2, 3, 5],
+    "hotel_id": 8
+  },
+  {
+    "title": "Скайлайн стандарт",
+    "description": "Номер с современным интерьером.",
+    "price": 3700,
+    "quantity": 5,
+    "facilities_ids": [1, 5, 8],
+    "hotel_id": 9
+  },
+  {
+    "title": "Номер делюкс на Манхэттене",
+    "description": "Стиль и комфорт в центре города.",
+    "price": 9700,
+    "quantity": 1,
+    "facilities_ids": [1, 5, 6, 7, 9],
+    "hotel_id": 9
+  },
+  {
+    "title": "Пляжный номер",
+    "description": "Вид на море, выход к пляжу.",
+    "price": 4200,
+    "quantity": 3,
+    "facilities_ids": [1, 2, 5],
+    "hotel_id": 10
+  },
+  {
+    "title": "Премиум с террасой",
+    "description": "Терраса с шезлонгами, мини-бар.",
+    "price": 7400,
+    "quantity": 2,
+    "facilities_ids": [1, 5, 6, 9],
+    "hotel_id": 10
+  }
+]

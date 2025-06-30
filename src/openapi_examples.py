@@ -1,4 +1,7 @@
+from datetime import date, timedelta
+
 from fastapi.openapi.models import Example
+
 
 admin_example = Example(
     summary="Админ",
@@ -6,7 +9,7 @@ admin_example = Example(
         "login": "di",
         "name": "admin",
         "email": "admin@h.ru",
-        "age": "12",
+        "age": 12,
         "password": "111",
     },
 )
@@ -17,7 +20,7 @@ user_example = Example(
         "login": "Zurab",
         "name": "Ashot",
         "email": "za@h.ru",
-        "age": "12",
+        "age": 12,
         "password": "000",
     },
 )
@@ -51,8 +54,11 @@ room_standard = Example(
     value={
         "title": "Номер стандарт",
         "description": "",
-        "price": "2500",
-        "quantity": "4",
+        "price": 2500,
+        "quantity": 4,
         "facilities_ids": [],
     },
 )
+
+date_today = Example(summary="Cегодня", value=date.today())
+date_tomorrow = Example(summary="Завтра", value=date.today() + timedelta(days=1))
