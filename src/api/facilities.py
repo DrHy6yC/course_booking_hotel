@@ -16,7 +16,7 @@ custom_key_builder = KeyBuilderCustom(my_key="all_facilities")
     summary="Получить все услуги",
     description="Получить список всех услуг которые есть в БД",
 )
-# @cache(expire=10, key_builder=custom_key_builder)
+@cache(expire=10, key_builder=custom_key_builder)
 async def get_facilities(db: DBDep):
     return await db.facilities.get_all()
 
