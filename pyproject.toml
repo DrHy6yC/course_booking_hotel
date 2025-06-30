@@ -1,0 +1,14 @@
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+# Исключение для всей папки migrations и файла env.py
+exclude = '''
+/(
+    src/migrations/env\.py
+)/
+'''
+
+[tool.isort]
+profile = "black"
+skip = ["src/migrations", "src/migrations/env.py"]
