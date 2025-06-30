@@ -13,5 +13,6 @@ class BookingAdd(BookingRequestAdd):
     user_id: int
     price: int
 
+
 class Booking(BookingAdd):
     id: int

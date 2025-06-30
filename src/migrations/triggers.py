@@ -9,6 +9,7 @@ END;
 $$ LANGUAGE plpgsql;
 """
 
+
 def create_update_trigger(table_name, column, type_before):
     return f"""
     CREATE TRIGGER {table_name}_{type_before}_timestamp

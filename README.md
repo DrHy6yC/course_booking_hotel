@@ -1,7 +1,6 @@
 # API для бронирования отеля
 ##### Пробую разные технологии и паттерны в рамках курса по Backend-разработки на FastApi.
-
----
+***
 # Полезные команды
 ***
 ## Связывание локального Git'а и GitHub
@@ -89,6 +88,18 @@ celery -A src.tasks.celery_app:celery_instance beat -l INFO
 ### 3 Запуск worker и beat в linux/MacOS:
 ``````
 celery --app=src.tasks.celery_app:celery_instance worker -l INFO -B
+``````
+***
+## Форматирование с Black по PEP8
+``````
+Проверка изменений
+black --diff C:\Pet-projects\course_booking_hotel\src
+
+Применение изменений в выбранной папке
+black .\src\
+
+Применение изменений для импортов
+isort .\src\
 ``````
 ***
 

@@ -16,4 +16,3 @@ class UsersRepository(BaseRepository):
         result = await self.session.execute(query)
         model = result.scalars().one()
         return UserWithHashedPass.model_validate(obj=model, from_attributes=True)
-

@@ -4,9 +4,8 @@ from fastapi import APIRouter, Body, HTTPException, Query, status
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import DBDep, PaginationDep
-from src.openapi_examples import hotel_sochi, hotel_dubai
+from src.openapi_examples import hotel_dubai, hotel_sochi
 from src.schemas.hotel import HotelAdd, HotelPatch
-
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
 
@@ -18,19 +17,16 @@ router = APIRouter(prefix="/hotels", tags=["Отели"])
 )
 @cache(expire=10)
 async def get_hotels(
-        db: DBDep,
-        pagination: PaginationDep,
-        title: str | None = Query(default=None, description="Название отеля"),
-        location: str | None = Query(default=None, description="Адрес отеля"),
+    db: DBDep,
+    pagination: PaginationDep,
+    title: str | None = Query(default=None, description="Название отеля"),
+    location: str | None = Query(default=None, description="Адрес отеля"),
 ):
     per_page = pagination.per_page or 5
     limit = per_page
     offset = per_page * (pagination.page - 1)
     return await db.hotels.get_all(
-        title=title,
-        location=location,
-        limit=limit,
-        offset=offset
+        title=title, location=location, limit=limit, offset=offset
     )
 
 
@@ -41,12 +37,12 @@ async def get_hotels(
 )
 @cache(expire=10)
 async def get_hotels_unoccupied(
-        db: DBDep,
-        pagination: PaginationDep,
-        date_from: date = Query(example=date.today()),
-        date_to: date = Query(example=date.today() + timedelta(days=1)),
-        title: str | None = Query(default=None, description="Название отеля"),
-        location: str | None = Query(default=None, description="Адрес отеля"),
+    db: DBDep,
+    pagination: PaginationDep,
+    date_from: date = Query(example=date.today()),
+    date_to: date = Query(example=date.today() + timedelta(days=1)),
+    title: str | None = Query(default=None, description="Название отеля"),
+    location: str | None = Query(default=None, description="Адрес отеля"),
 ):
     per_page = pagination.per_page or 5
     limit = per_page
@@ -64,13 +60,10 @@ async def get_hotels_unoccupied(
 @router.get(
     path="/{hotel_id}",
     summary="Получение информации по одному отелю",
-    description="Можно получить один отель по айди"
+    description="Можно получить один отель по айди",
 )
 @cache(expire=10)
-async def get_hotel_by_id(
-        hotel_id: int,
-        db: DBDep
-):
+async def get_hotel_by_id(hotel_id: int, db: DBDep):
     return await db.hotels.get_one_or_none(id=hotel_id)
 
 
@@ -80,13 +73,13 @@ async def get_hotel_by_id(
     description="Необходимо ввести title и name, id генерируется автоматически",
 )
 async def create_hotel(
-        db: DBDep,
-        hotel_data: HotelAdd = Body(
-            openapi_examples={
-                "1": hotel_sochi,
-                "2": hotel_dubai,
-            }
-        )
+    db: DBDep,
+    hotel_data: HotelAdd = Body(
+        openapi_examples={
+            "1": hotel_sochi,
+            "2": hotel_dubai,
+        }
+    ),
 ):
     result = await db.hotels.add(hotel_data)
     await db.commit()
@@ -99,13 +92,11 @@ async def create_hotel(
     description="Изменить все параметры отеля по id",
 )
 async def put_hotel(
-        hotel_id: int,
-        hotel_data: HotelAdd,
-        db: DBDep,
+    hotel_id: int,
+    hotel_data: HotelAdd,
+    db: DBDep,
 ):
-    await db.hotels.edit(
-        id=hotel_id,
-        model_data=hotel_data)
+    await db.hotels.edit(id=hotel_id, model_data=hotel_data)
     await db.commit()
     return {"status": "OK"}
 
@@ -116,14 +107,11 @@ async def put_hotel(
     description="Изменить некоторые параметры отеля по id",
 )
 async def edit_hotel(
-        hotel_id: int,
-        hotel_data: HotelPatch,
-        db: DBDep,
+    hotel_id: int,
+    hotel_data: HotelPatch,
+    db: DBDep,
 ):
-    await db.hotels.edit(
-        id=hotel_id,
-        model_data=hotel_data,
-        exclude_unset=True)
+    await db.hotels.edit(id=hotel_id, model_data=hotel_data, exclude_unset=True)
     await db.commit()
     return {"status": "OK"}
 
@@ -134,8 +122,8 @@ async def edit_hotel(
     description="Удаляем отель по id",
 )
 async def delete_hotel(
-        hotel_id: int,
-        db: DBDep,
+    hotel_id: int,
+    db: DBDep,
 ):
     result = await db.hotels.delete(id=hotel_id)
     if result == 200:
@@ -144,8 +132,10 @@ async def delete_hotel(
     elif result == 404:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"status": "Error - NOT_FOUND"})
+            detail={"status": "Error - NOT_FOUND"},
+        )
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"status": "Error - BAD_REQUEST"})
+            detail={"status": "Error - BAD_REQUEST"},
+        )

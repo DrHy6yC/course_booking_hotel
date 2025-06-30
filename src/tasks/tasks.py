@@ -1,7 +1,8 @@
 import asyncio
 import os
-from PIL import Image
 from time import sleep
+
+from PIL import Image
 
 from src.connectors.database_init import async_session_maker_null_pool
 from src.tasks.celery_app import celery_instance
@@ -14,10 +15,9 @@ def sleep_task():
     print("Задача выполнена")
 
 
-
 def resize_image(image_path: str):
     sizes = [1000, 500, 200]
-    output_folder = 'src/static/images'
+    output_folder = "src/static/images"
 
     img = Image.open(image_path)
 
@@ -25,7 +25,10 @@ def resize_image(image_path: str):
     name, ext = os.path.splitext(base_name)
 
     for size in sizes:
-        img_resized = img.resize((size, int(img.height * (size / img.width))), Image.Resampling.LANCZOS)
+        img_resized = img.resize(
+            size=(size, int(img.height * (size / img.width))),
+            resample=Image.Resampling.LANCZOS,
+        )
 
         new_file_name = f"{name}_{size}px{ext}"
 
@@ -33,12 +36,15 @@ def resize_image(image_path: str):
 
         img_resized.save(output_path)
 
-    print(f"Изображение сохранено в следующих размерах: {sizes} в папке {output_folder}")
+    print(
+        f"Изображение сохранено в следующих размерах: {sizes} в папке {output_folder}"
+    )
 
 
 @celery_instance.task
 def resize_image_celery(image_path: str):
     resize_image(image_path)
+
 
 async def get_bookings_with_today_checkin_helper():
     print("Я запускаю поиск бронирований")

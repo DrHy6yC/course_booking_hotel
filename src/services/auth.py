@@ -1,15 +1,14 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from passlib.context import CryptContext
 from fastapi import HTTPException, status
+from passlib.context import CryptContext
 
 from src.config import settings
 
 
 class AuthServices:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
     def hashed_password(self, password: str) -> str:
         return self.pwd_context.hash(password)
@@ -19,7 +18,9 @@ class AuthServices:
 
     def create_access_token(self, data: dict) -> str:
         to_encode = data.copy()
-        expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTE)
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTE
+        )
         to_encode |= {"exp": expire}
         encoded_jwt = jwt.encode(
             payload=to_encode,
@@ -38,10 +39,10 @@ class AuthServices:
         except jwt.exceptions.DecodeError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail={"status": "Error - неверный токен"}
+                detail={"status": "Error - неверный токен"},
             )
         except jwt.exceptions.ExpiredSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail={"status": "Error - токен просрочен"}
+                detail={"status": "Error - токен просрочен"},
             )

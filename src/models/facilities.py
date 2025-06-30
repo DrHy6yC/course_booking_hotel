@@ -1,4 +1,4 @@
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.connectors.database_init import BaseORM
@@ -11,8 +11,7 @@ class FacilitiesORM(BaseORM):
     title: Mapped[str] = mapped_column(String(length=100))
 
     rooms: Mapped[list["RoomsORM"]] = relationship(
-        back_populates="facilities",
-        secondary="rooms_facilities"
+        back_populates="facilities", secondary="rooms_facilities"
     )
 
 

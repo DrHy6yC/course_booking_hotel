@@ -26,5 +26,3 @@ class RedisManager:
     async def close(self):
         if self.redis:
             await self.redis.close()
-
-

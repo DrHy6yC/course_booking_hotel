@@ -4,10 +4,7 @@ from fastapi.openapi.docs import get_swagger_ui_html
 router = APIRouter(prefix="/docs")
 
 
-@router.get(
-    path="",
-    include_in_schema=False
-)
+@router.get(path="", include_in_schema=False)
 async def custom_swagger_ui_html():
     return get_swagger_ui_html(
         openapi_url=router.openapi_url,

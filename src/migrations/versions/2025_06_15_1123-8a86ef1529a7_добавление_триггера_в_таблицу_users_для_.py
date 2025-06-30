@@ -10,8 +10,8 @@ from typing import Sequence, Union
 
 from alembic import op
 
-
-from src.migrations.triggers import create_trigger_function, create_update_trigger
+from src.migrations.triggers import (create_trigger_function,
+                                     create_update_trigger)
 
 # revision identifiers, used by Alembic.
 revision: str = "8a86ef1529a7"
@@ -23,11 +23,14 @@ table_name = "users"
 column = "created_at"
 type_before = "INSERT"
 
+
 def upgrade() -> None:
     op.execute(create_trigger_function(table_name, column))
-    op.execute(create_update_trigger(table_name,column, type_before))
+    op.execute(create_update_trigger(table_name, column, type_before))
 
 
 def downgrade() -> None:
-    op.execute(f"DROP TRIGGER IF EXISTS {table_name}_{type_before}_timestamp ON {table_name};")
+    op.execute(
+        f"DROP TRIGGER IF EXISTS {table_name}_{type_before}_timestamp ON {table_name};"
+    )
     op.execute(f"DROP FUNCTION IF EXISTS set_{table_name}_{column};")

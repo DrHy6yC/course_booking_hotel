@@ -1,6 +1,7 @@
-from fastapi_cache import KeyBuilder
-from typing import Optional, Any
+from typing import Any, Optional
+
 from fastapi import Request, Response
+from fastapi_cache import KeyBuilder
 
 
 class KeyBuilderCustom(KeyBuilder):
@@ -8,12 +9,12 @@ class KeyBuilderCustom(KeyBuilder):
         self.my_key = my_key
 
     async def __call__(
-            self,
-            function: Any,
-            namespace: str = "",
-            request: Optional[Request] = None,
-            response: Optional[Response] = None,
-            *args,
-            **kwargs,
+        self,
+        function: Any,
+        namespace: str = "",
+        request: Optional[Request] = None,
+        response: Optional[Response] = None,
+        *args,
+        **kwargs,
     ) -> str:
         return f"{self.my_key}"

@@ -1,16 +1,15 @@
 """Добавление отелей и номеров
 
 Revision ID: f50c81a97ba7
-Revises: 
+Revises:
 Create Date: 2025-06-13 11:19:35.915033
 
 """
 
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 revision: str = "f50c81a97ba7"
 down_revision: Union[str, None] = None

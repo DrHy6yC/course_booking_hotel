@@ -5,11 +5,11 @@ from src.api.dependencies import DBDep
 from src.custom_class import KeyBuilderCustom
 from src.schemas.facility import FacilityAdd
 
-
 router = APIRouter(prefix="/facilities", tags=["Услуги"])
 
 
 custom_key_builder = KeyBuilderCustom(my_key="all_facilities")
+
 
 @router.get(
     path="",
