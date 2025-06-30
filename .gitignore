@@ -3,6 +3,7 @@ course_booking_hotel/.idea
 /venv/
 /postgres-data/
 .env
+.test.env
 /.idea
 /redisdata/
 /postgres_data/

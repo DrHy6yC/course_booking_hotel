@@ -1,7 +1,12 @@
+from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # Настройка среды
+    MODE: Literal["TEST", "LOCAL", "DEV", "PROD"]
+
     # Настройки БД
     PG_VERSION: str
     PG_HOST: str
