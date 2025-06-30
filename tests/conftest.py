@@ -1,6 +1,9 @@
 import json
 from unittest import mock
 
+from src.services.auth import AuthServices
+
+
 mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 
 import pytest
@@ -78,13 +81,43 @@ async def async_fill_db(async_setup_db):
 
 @pytest.fixture(scope="session", autouse=True)
 async def create_user(ac, async_fill_db):
-    await ac.post(
-        url="/auth/register",
+    (
+        await ac.post(
+            url="/auth/register",
+            json={
+                "login": "di",
+                "name": "admin",
+                "email": "admin@h.ru",
+                "age": "12",
+                "password": "111",
+            },
+        )
+    )
+
+
+@pytest.fixture(scope="session", autouse=True)
+async def user_with_token(ac, create_user):
+    token_response = await ac.post(
+        url="/auth/login",
         json={
-            "login": "di",
-            "name": "admin",
             "email": "admin@h.ru",
-            "age": "12",
             "password": "111",
         },
     )
+    assert token_response.status_code == 200
+    token_from_cookies = token_response.cookies.get("access_token")
+    token_from_response = token_response.json()
+    assert token_from_response == token_from_cookies
+    user_response = await ac.get(
+        url="/auth/me",
+    )
+    assert user_response.status_code == 200
+    user_id = user_response.json()["id"]
+
+    pyload = AuthServices().decoded_access_token(token_from_cookies)
+
+    assert pyload
+    assert isinstance(pyload, dict)
+    assert pyload["user_id"] == user_id
+
+    yield user_id
