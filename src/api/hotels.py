@@ -15,7 +15,7 @@ router = APIRouter(prefix="/hotels", tags=["Отели"])
     summary="Получение списка всех существующих отелей",
     description="Можно получить список по локации или по названию отеля",
 )
-@cache(expire=10)
+# @cache(expire=10)
 async def get_hotels(
     db: DBDep,
     pagination: PaginationDep,

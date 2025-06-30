@@ -1,8 +1,10 @@
 import json
+from typing import Any, AsyncGenerator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from src.api.dependencies import get_db
 from src.config import settings
 from src.connectors.database_init import (
     BaseORM,
@@ -29,14 +31,22 @@ async def async_setup_db(check_test_mode):
         await conn.run_sync(BaseORM.metadata.create_all)
 
 
-@pytest.fixture(scope="function")
-async def db() -> DBManager:
+async def get_db_null_pool():
     async with DBManager(session_factories=async_session_maker_null_pool) as db:
         yield db
 
 
+@pytest.fixture(scope="function")
+async def db():
+    async for db in get_db_null_pool():
+        yield db
+
+
+app.dependency_overrides[get_db] = get_db_null_pool
+
+
 @pytest.fixture(scope="session")
-async def ac() -> AsyncClient:
+async def ac():
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test.ru"
     ) as ac:

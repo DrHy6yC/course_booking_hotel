@@ -1,8 +1,9 @@
 from datetime import date, timedelta
-from src.schemas.booking import Booking, BookingAdd, BookingRequestAdd
+
+from src.schemas.booking import BookingAdd, BookingRequestAdd
 
 
-async def test_add_db_booking_crud(db):
+async def test_add_booking_crud(db):
     user_id = (await db.users.get_all())[0].id
     room_id = (await db.rooms.get_all())[0].id
     booking_data = BookingAdd(
@@ -36,14 +37,16 @@ async def test_add_db_booking_crud(db):
 
     await db.bookings.edit(model_data=booking_edit_data, id=added_booking.id)
     await db.commit()
-    received_booking = await db.bookings.get_one_or_none(id=added_booking.id)
+    update_booking = await db.bookings.get_one_or_none(id=added_booking.id)
     await db.rollback()
-    assert received_booking
+    assert update_booking
     assert (
-        received_booking.user_id == user_id
-        and received_booking.room_id == room_id
-        and received_booking.date_from == booking_edit_data.date_from
-        and received_booking.date_to == booking_edit_data.date_to
+        update_booking.user_id == user_id
+        and update_booking.room_id == room_id
+        and update_booking.date_from == booking_edit_data.date_from
+        and update_booking.date_to == booking_edit_data.date_to
+        and update_booking.date_from != received_booking.date_from
+        and update_booking.date_to != received_booking.date_to
     )
 
     result = await db.bookings.delete(id=added_booking.id)
