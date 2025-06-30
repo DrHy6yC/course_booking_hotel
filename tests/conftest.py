@@ -29,6 +29,20 @@ async def async_setup_db(check_test_mode):
         await conn.run_sync(BaseORM.metadata.create_all)
 
 
+@pytest.fixture(scope="function")
+async def db() -> DBManager:
+    async with DBManager(session_factories=async_session_maker_null_pool) as db:
+        yield db
+
+
+@pytest.fixture(scope="session")
+async def ac() -> AsyncClient:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test.ru"
+    ) as ac:
+        yield ac
+
+
 @pytest.fixture(scope="session", autouse=True)
 async def async_fill_db(async_setup_db):
     with open(file="tests/mock_hotels.json", mode="r", encoding="utf-8") as f_h:
@@ -43,26 +57,22 @@ async def async_fill_db(async_setup_db):
     hotels = [HotelAdd.model_validate(hotel) for hotel in hotel_data]
     facilities = [FacilityAdd.model_validate(facility) for facility in facilities_data]
     rooms = [RoomAdd.model_validate(room) for room in room_data]
-
-    async with DBManager(session_factories=async_session_maker_null_pool) as db:
-        await db.hotels.add_bulk(hotels)
-        await db.facilities.add_bulk(facilities)
-        await db.rooms.add_bulk(rooms)
-        await db.commit()
+    async with DBManager(session_factories=async_session_maker_null_pool) as db_:
+        await db_.hotels.add_bulk(hotels)
+        await db_.facilities.add_bulk(facilities)
+        await db_.rooms.add_bulk(rooms)
+        await db_.commit()
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def create_user(async_fill_db):
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test.ru"
-    ) as ac:
-        await ac.post(
-            url="/auth/register",
-            json={
-                "login": "di",
-                "name": "admin",
-                "email": "admin@h.ru",
-                "age": "12",
-                "password": "111",
-            },
-        )
+async def create_user(ac, async_fill_db):
+    await ac.post(
+        url="/auth/register",
+        json={
+            "login": "di",
+            "name": "admin",
+            "email": "admin@h.ru",
+            "age": "12",
+            "password": "111",
+        },
+    )
