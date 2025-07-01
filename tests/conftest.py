@@ -96,7 +96,7 @@ async def create_user(ac, async_fill_db):
 
 
 @pytest.fixture(scope="session")
-async def user_with_token(ac, create_user):
+async def ac_with_token(ac, create_user):
     await ac.post(
         url="/auth/login",
         json={
