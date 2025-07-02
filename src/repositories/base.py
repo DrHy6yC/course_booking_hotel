@@ -35,10 +35,7 @@ class BaseRepository:
             return None
         return self.mapper.map_to_domain_entity(entity)
 
-    async def add(
-        self,
-        model_data: BaseModel,
-    ):
+    async def add(self, model_data: BaseModel, *args):
         add_model_stmt = (
             insert(self.model).values(**model_data.model_dump()).returning(self.model)
         )
