@@ -68,7 +68,7 @@ class BaseRepository:
         query = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(query)
         count_model = len(result.scalars().all())
-        if count_model == 1:
+        if count_model >= 1:
             delete_model_stmt = delete(self.model).filter_by(**filter_by)
             await self.session.execute(delete_model_stmt)
             return 200

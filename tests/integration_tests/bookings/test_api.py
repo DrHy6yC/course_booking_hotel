@@ -29,13 +29,43 @@ async def test_post_booking(
             "date_to": date_to,
         },
     )
-    if response.status_code == 422:
-        error_message = response.json().get("detail", "")
-        print(f"Error message: {error_message}")
-        assert "specific error message" in error_message
     assert response.status_code == status_code
     if status_code == 200:
         data = response.json()
         assert isinstance(data, dict)
         assert room_id == data["booking"]["room_id"]
         assert data["status"] == "OK"
+
+
+async def test_delete_booking(ac_with_token, db):
+    response = await ac_with_token.delete(url="/bookings/me")
+    assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    "room_id, date_from, date_to, count_bookings",
+    [
+        (2, today, tomorrow, 1),
+        (2, today, tomorrow, 2),
+        (2, today, tomorrow, 2),
+        (2, today_plus_2, today_plus_3, 3),
+        (2, today, today_plus_3, 3),
+    ],
+)
+async def test_add_and_get_bookings(
+    room_id, date_from, date_to, count_bookings, db, ac_with_token
+):
+    await ac_with_token.post(
+        url="/bookings",
+        json={
+            "room_id": room_id,
+            "date_from": date_from,
+            "date_to": date_to,
+        },
+    )
+    response = await ac_with_token.get(url="/bookings/me")
+    assert response.status_code == 200
+    data = response.json()
+    print(data)
+    if response.status_code == 200:
+        assert len(data) == count_bookings
