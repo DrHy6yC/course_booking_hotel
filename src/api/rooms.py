@@ -29,8 +29,8 @@ async def get_rooms(
 async def get_unoccupied_rooms(
     hotel_id: int,
     db: DBDep,
-    date_from: date = Query(openapi_examples=date_today),
-    date_to: date = Query(openapi_examples=date_tomorrow),
+    date_from: date = Query(openapi_examples={"1": date_today}),
+    date_to: date = Query(openapi_examples={"1": date_tomorrow}),
 ):
     return await db.rooms.get_filter_by_time(
         hotel_id=hotel_id, date_from=date_from, date_to=date_to

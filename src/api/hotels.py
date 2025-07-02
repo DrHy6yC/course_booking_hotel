@@ -39,8 +39,8 @@ async def get_hotels(
 async def get_hotels_unoccupied(
     db: DBDep,
     pagination: PaginationDep,
-    date_from: date = Query(openapi_examples=date_today),
-    date_to: date = Query(openapi_examples=date_tomorrow),
+    date_from: date = Query(openapi_examples={"1": date_today}),
+    date_to: date = Query(openapi_examples={"1": date_tomorrow}),
     title: str | None = Query(default=None, description="Название отеля"),
     location: str | None = Query(default=None, description="Адрес отеля"),
 ):
