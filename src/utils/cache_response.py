@@ -6,26 +6,37 @@ from fastapi import Request
 from src.utils.redis_manager import RedisManager
 
 
-def cache_response(redis: RedisManager, expire: int = 60):
+def cache_response(redis: RedisManager, expire: int = 60) -> Callable:
+    """
+    Декоратор для кэширования ответов эндпоинтов.
 
-    def decorator(func: Callable):
+    :param redis: Экземпляр RedisManager для работы с Redis.
+    :param expire: Время жизни кэша в секундах (по умолчанию 60 секунд).
+    :return: Декорированная функция.
+    """
+
+    def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
-        async def wrapper(*args, **kwargs):
+        async def wrapper(*args: Any, **kwargs: Any) -> Any:
             request: Request = kwargs.get("request")
 
             if not request:
                 raise ValueError("Request object is required in endpoint for caching")
 
-            path = request.url.path
-            query = str(sorted(request.query_params.items()))
-            cache_key = f"cache:{path}:{query}"
+            # Создаем ключ для кэша на основе пути и параметров запроса
+            path: str = request.url.path
+            query: str = str(sorted(request.query_params.items()))
+            cache_key: str = f"cache:{path}:{query}"
 
-            cached = await redis.get(cache_key)
+            # Проверяем, есть ли кэшированный ответ
+            cached: str | None = await redis.get(cache_key)
             if cached:
                 return json.loads(cached)
 
-            response = await func(*args, **kwargs)
+            # Вызываем оригинальную функцию и сохраняем результат в кэш
+            response: Any = await func(*args, **kwargs)
 
+            # Сериализуем ответ в JSON и сохраняем в Redis
             await redis.set(cache_key, json.dumps(response), expire=expire)
 
             return response
