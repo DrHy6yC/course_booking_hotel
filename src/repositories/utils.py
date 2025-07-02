@@ -46,7 +46,6 @@ def unoccupied_rooms(date_from: date, date_to: date, hotel_id: int | None = None
         )
     )
 
-    print(query.compile(bind=engine, compile_kwargs={"literal_binds": True}))
     return query
 
 

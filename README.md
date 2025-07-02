@@ -105,6 +105,11 @@ isort .\src\
 ## Запуск тестов
     pytest -v
 
+    Запуск с выводом логов 
+    pytest -v
+
+    Запуск одного теста
+    pytest .\tests\integration_tests\bookings\test_api.py
 *** 
 
 
