@@ -1,6 +1,8 @@
 from datetime import date, timedelta
 import pytest
 
+from tests.conftest import get_db_null_pool
+
 
 today = str(date.today())
 tomorrow = str(date.today() + timedelta(days=1))
@@ -37,9 +39,11 @@ async def test_post_booking(
         assert data["status"] == "OK"
 
 
-async def test_delete_booking(ac_with_token, db):
-    response = await ac_with_token.delete(url="/bookings/me")
-    assert response.status_code == 200
+@pytest.fixture(scope="module")
+async def delete_all_bookings_db():
+    async for _db in get_db_null_pool():
+        await _db.bookings.delete()
+        await _db.commit()
 
 
 @pytest.mark.parametrize(
@@ -53,7 +57,13 @@ async def test_delete_booking(ac_with_token, db):
     ],
 )
 async def test_add_and_get_bookings(
-    room_id, date_from, date_to, count_bookings, db, ac_with_token
+    room_id,
+    date_from,
+    date_to,
+    count_bookings,
+    db,
+    ac_with_token,
+    delete_all_bookings_db,
 ):
     await ac_with_token.post(
         url="/bookings",
@@ -66,6 +76,10 @@ async def test_add_and_get_bookings(
     response = await ac_with_token.get(url="/bookings/me")
     assert response.status_code == 200
     data = response.json()
-    print(data)
     if response.status_code == 200:
         assert len(data) == count_bookings
+
+
+async def test_delete_booking(ac_with_token, db):
+    response = await ac_with_token.delete(url="/bookings/me")
+    assert response.status_code == 200
