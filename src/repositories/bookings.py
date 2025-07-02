@@ -1,13 +1,11 @@
 from datetime import date
 
 from fastapi import HTTPException, status
-from sqlalchemy import insert, select
-from sqlalchemy.orm import selectinload
+from sqlalchemy import select
 
 from src.models.bookings import BookingsORM
-from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
-from src.repositories.mappers.mappers import BookingDataMapper, RoomDataMapper
+from src.repositories.mappers.mappers import BookingDataMapper
 from src.repositories.utils import unoccupied_rooms
 
 
@@ -22,31 +20,17 @@ class BookingsRepository(BaseRepository):
             self.mapper.map_to_domain_entity(booking) for booking in res.scalars().all()
         ]
 
-    async def add(self, model_data: BookingsORM, hotel_id: int):
+    async def add_booking(self, model_data: BookingsORM, hotel_id: int):
         filter_id = unoccupied_rooms(
             hotel_id=hotel_id,
             date_from=model_data.date_from,
             date_to=model_data.date_to,
         )
-        query = (
-            select(RoomsORM)
-            .options(selectinload(RoomsORM.facilities))
-            .filter(RoomsORM.id.in_(filter_id))
-        )
-        result = await self.session.execute(query)
-        rooms = [
-            RoomDataMapper.map_to_domain_entity(booking)
-            for booking in result.scalars().all()
-        ]
-        if rooms:
-            add_model_stmt = (
-                insert(self.model)
-                .values(**model_data.model_dump())
-                .returning(self.model)
-            )
-            result = await self.session.execute(add_model_stmt)
-            entity = result.scalars().one_or_none()
-            return self.mapper.map_to_domain_entity(entity)
+        result = await self.session.execute(filter_id)
+        room_ids = result.scalars().all()
+        if model_data.room_id in room_ids:
+            booking = await self.add(model_data=model_data)
+            return booking
         else:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
