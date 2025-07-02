@@ -17,3 +17,6 @@ class BookingsRepository(BaseRepository):
         return [
             self.mapper.map_to_domain_entity(booking) for booking in res.scalars().all()
         ]
+
+    async def add(self):
+        pass
