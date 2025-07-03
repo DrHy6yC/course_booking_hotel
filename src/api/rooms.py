@@ -5,7 +5,9 @@ from fastapi_cache.decorator import cache
 from src.api.dependencies import DBDep
 from src.openapi_examples import date_today, date_tomorrow, room_standard
 from src.schemas.facility import RoomFacilityAdd
+from src.schemas.message import MessageReturn
 from src.schemas.room import (
+    Room,
     RoomAdd,
     RoomAddRequest,
     RoomPatch,
@@ -60,12 +62,18 @@ async def create_room(
     _room_data = RoomAdd(
         hotel_id=hotel_id, **room_data.model_dump(exclude={"facilities_ids"})
     )
-    room = await db.rooms.add(_room_data)
-    rooms_facilities_data = [
-        RoomFacilityAdd(room_id=room.id, facility_id=f_id)
-        for f_id in room_data.facilities_ids
-    ]
-    await db.rooms_facilities.add_bulk(rooms_facilities_data)
+    # TODO: Починить типизацию
+    # TODO: Сделать проверку на существования отеля
+    room: Room = await db.rooms.add(_room_data)  # type: ignore
+    await db.session.flush()
+
+    if room_data.facilities_ids:
+        rooms_facilities_data = [
+            RoomFacilityAdd(room_id=room.id, facility_id=f_id)
+            for f_id in room_data.facilities_ids
+        ]
+        await db.rooms_facilities.add_bulk(rooms_facilities_data)
+
     await db.commit()
     return {"status": "OK", "room": room}
 
@@ -108,11 +116,12 @@ async def put_room(
         hotel_id=hotel_id,
         model_data=_room_data,
     )
-    await db.rooms_facilities.set_room_facilities(
-        room_id=room_id, facilities_ids=room_data.facilities_ids
-    )
+    if room_data.facilities_ids:
+        await db.rooms_facilities.set_room_facilities(
+            room_id=room_id, facilities_ids=room_data.facilities_ids
+        )
     await db.commit()
-    return {"status": "OK"}
+    return MessageReturn(status="OK")
 
 
 @router.patch(

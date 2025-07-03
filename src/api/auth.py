@@ -89,7 +89,7 @@ async def login_user(
 async def get_me(
     user_id: UserIdDep,
     db: DBDep,
-) -> User:
+) -> User | None:
     return await db.users.get_one_or_none(id=user_id)
 
 

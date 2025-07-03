@@ -22,27 +22,34 @@ class HotelsRepository(BaseRepository):
         limit: int,
         offset: int,
     ) -> list[Hotel]:
+        # Получаем ID свободных комнат
         id_unoccupied_rooms = unoccupied_rooms(
             date_from=date_from, date_to=date_to
         )
+        # Получаем ID отелей со свободными комнатами
         id_unoccupied_hotels = (
             select(RoomsORM.hotel_id)
             .select_from(RoomsORM)
             .filter(RoomsORM.id.in_(id_unoccupied_rooms))
         )
-        id_unoccupied_hotels = add_pagination(
+        # получаем список отелей
+        hotels_query = select(HotelsORM).filter(
+            HotelsORM.id.in_(id_unoccupied_hotels)
+        )
+
+        query = add_pagination(
             model=self.model,
-            query=id_unoccupied_hotels,
+            query=hotels_query,
             title=title,
             location=location,
             limit=limit,
             offset=offset,
         )
-        return await self.get_filtered(
-            HotelsORM.id.in_(id_unoccupied_hotels),
-            limit=limit,
-            offset=offset,
-        )
+        result = await self.session.execute(query)
+        return [
+            self.mapper.map_to_domain_entity(hotel)
+            for hotel in result.scalars().all()
+        ]
 
     async def get_all(
         self,

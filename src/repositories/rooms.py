@@ -32,7 +32,9 @@ class RoomsRepository(BaseRepository):
             for entity in result.unique().scalars().all()
         ]
 
-    async def get_one_or_none_with_rels(self, **filter_by):
+    async def get_one_or_none_with_rels(
+        self, **filter_by
+    ) -> RoomWithRelsDataMapper | None:
         query = (
             select(self.model)
             .options(joinedload(self.model.facilities))

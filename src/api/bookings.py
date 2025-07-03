@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from fastapi_cache.decorator import cache
 from src.api.dependencies import DBDep, UserIdDep
 from src.schemas.booking import BookingAdd, BookingRequestAdd
+from src.schemas.message import MessageReturn, MessageReturnBooking
 
 router = APIRouter(prefix="/bookings", tags=["Бронирование номеров"])
 
@@ -35,7 +36,7 @@ async def create_bookings(
     db: DBDep,
     user_id: UserIdDep,
     booking_data: BookingRequestAdd,
-):
+) -> MessageReturnBooking:
     room = await db.rooms.get_one_or_none(id=booking_data.room_id)
     if not room:
         raise HTTPException(
@@ -49,7 +50,8 @@ async def create_bookings(
         _booking_data, hotel_id=room.hotel_id
     )
     await db.commit()
-    return {"status": "OK", "booking": result}
+    # TODO: Починить типизацию
+    return MessageReturnBooking(status="OK", booking=result)  # type: ignore
 
 
 @router.delete(
@@ -60,7 +62,7 @@ async def create_bookings(
 async def delete_bookings(
     db: DBDep,
     user_id: UserIdDep,
-):
+) -> MessageReturn:
     await db.bookings.delete(user_id=user_id)
     await db.commit()
-    return {"status": "OK"}
+    return MessageReturn(status="OK")

@@ -1,21 +1,27 @@
-from pydantic import BaseModel
+from typing import Generic, Type, TypeVar
+
 from sqlalchemy import delete, insert, select, update
-from src.repositories.mappers.base import DataMapper
+from sqlalchemy.ext.asyncio import AsyncSession
+from src.repositories.mappers.base import DataMapper, DBModelType, SchemaType
+
+DataMapperType = TypeVar("DataMapperType", bound=DataMapper)
 
 
-class BaseRepository:
-    model = None
-    mapper: DataMapper = None
+class BaseRepository(Generic[DBModelType, DataMapperType]):
+    model: Type[DBModelType]
+    mapper: Type[DataMapperType]
+    session: AsyncSession
 
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession):
         self.session = session
 
+    # TODO: Починить типизацию
     async def get_filtered(
-        self, *filter, limit: int = 5, offset: int = 0, **filter_by
-    ):
+        self, limit: int = 5, offset: int = 0, *filters, **filter_by
+    ) -> list[SchemaType]:  # type: ignore
         query = (
             select(self.model)
-            .filter(*filter)
+            .filter(*filters)
             .filter_by(**filter_by)
             .limit(limit)
             .offset(offset)
@@ -26,10 +32,12 @@ class BaseRepository:
             for model in result.scalars().all()
         ]
 
-    async def get_all(self, *args, **kwargs):
+    # TODO: Починить типизацию
+    async def get_all(self, *args, **kwargs) -> list[SchemaType]:  # type: ignore
         return await self.get_filtered()
 
-    async def get_one_or_none(self, **filter_by):
+    # TODO: Починить типизацию
+    async def get_one_or_none(self, **filter_by) -> SchemaType | None:  # type: ignore
         query = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(query)
         entity = result.scalars().one_or_none()
@@ -37,7 +45,9 @@ class BaseRepository:
             return None
         return self.mapper.map_to_domain_entity(entity)
 
-    async def add(self, model_data: BaseModel):
+    # TODO: Починить типизацию, вместо SchemaType добавить две схемы,
+    #  на входе и на выходе
+    async def add(self, model_data: SchemaType) -> SchemaType:  # type: ignore
         add_model_stmt = (
             insert(self.model)
             .values(**model_data.model_dump())
@@ -49,8 +59,8 @@ class BaseRepository:
 
     async def add_bulk(
         self,
-        models_data: list[BaseModel],
-    ):
+        models_data: list[SchemaType],
+    ) -> None:
         add_model_stmt = (
             insert(self.model)
             .values([item.model_dump() for item in models_data])
@@ -58,9 +68,13 @@ class BaseRepository:
         )
         await self.session.execute(add_model_stmt)
 
+    # TODO: Починить типизацию
     async def edit(
-        self, model_data: BaseModel, exclude_unset: bool = False, **filter_by
-    ):
+        self,
+        model_data: SchemaType,
+        exclude_unset: bool = False,
+        **filter_by,  # type: ignore
+    ) -> None:
         edit_model_stmt = (
             update(self.model)
             .filter_by(**filter_by)
@@ -68,7 +82,7 @@ class BaseRepository:
         )
         await self.session.execute(edit_model_stmt)
 
-    async def delete(self, **filter_by):
+    async def delete(self, **filter_by) -> int:
         query = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(query)
         count_model = len(result.scalars().all())

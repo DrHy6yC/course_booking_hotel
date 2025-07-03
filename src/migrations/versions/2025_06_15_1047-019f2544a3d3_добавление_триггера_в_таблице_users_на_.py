@@ -8,7 +8,6 @@ Create Date: 2025-06-15 10:47:17.366759
 
 from typing import Sequence, Union
 
-import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
 
@@ -25,7 +24,6 @@ def upgrade() -> None:
         "created_at",
         existing_type=postgresql.TIMESTAMP(),
         nullable=False,
-        existing_server_default=sa.text("now()"),
     )
 
 
@@ -35,5 +33,4 @@ def downgrade() -> None:
         "created_at",
         existing_type=postgresql.TIMESTAMP(),
         nullable=True,
-        existing_server_default=sa.text("now()"),
     )

@@ -1,10 +1,12 @@
 # ruff: noqa: E402
 import json
+from typing import AsyncGenerator
 from unittest import mock
 
 mock.patch(
     "fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f
 ).start()
+
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -24,18 +26,18 @@ from src.utils.db_manager import DBManager
 
 
 @pytest.fixture(scope="session", autouse=True)
-def check_test_mode():
+def check_test_mode() -> None:
     assert settings.MODE == "TEST"
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def async_setup_db(check_test_mode):
+async def async_setup_db(check_test_mode) -> None:
     async with engine_null_pool.begin() as conn:
         await conn.run_sync(BaseORM.metadata.drop_all)
         await conn.run_sync(BaseORM.metadata.create_all)
 
 
-async def get_db_null_pool():
+async def get_db_null_pool() -> AsyncGenerator[DBManager, None]:
     async with DBManager(
         session_factories=async_session_maker_null_pool
     ) as db:
@@ -43,7 +45,7 @@ async def get_db_null_pool():
 
 
 @pytest.fixture(scope="function")
-async def db():
+async def db() -> AsyncGenerator[DBManager, None]:
     async for db in get_db_null_pool():
         yield db
 
@@ -52,7 +54,7 @@ app.dependency_overrides[get_db] = get_db_null_pool
 
 
 @pytest.fixture(scope="session")
-async def ac():
+async def ac() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test.ru"
     ) as ac:
@@ -60,7 +62,7 @@ async def ac():
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def async_fill_db(async_setup_db):
+async def async_fill_db(async_setup_db) -> None:
     with open(file="tests/mock_hotels.json", encoding="utf-8") as f_h:
         hotel_data = json.load(f_h)
 
@@ -85,7 +87,7 @@ async def async_fill_db(async_setup_db):
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def create_user(ac, async_fill_db):
+async def create_user(ac, async_fill_db) -> None:
     (
         await ac.post(
             url="/auth/register",
@@ -101,7 +103,7 @@ async def create_user(ac, async_fill_db):
 
 
 @pytest.fixture(scope="session")
-async def ac_with_token(ac, create_user):
+async def ac_with_token(ac, create_user) -> AsyncGenerator[AsyncClient, None]:
     await ac.post(
         url="/auth/login",
         json={

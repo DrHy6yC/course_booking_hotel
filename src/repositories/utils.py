@@ -1,13 +1,15 @@
 from datetime import date
 
-from sqlalchemy import func, select
+from sqlalchemy import Select, func, select
 from src.models.bookings import BookingsORM
 from src.models.rooms import RoomsORM
 
 
 def unoccupied_rooms(
-    date_from: date, date_to: date, hotel_id: int | None = None
-):
+    date_from: date,
+    date_to: date,
+    hotel_id: int | None = None,
+) -> Select:
     rooms_count = (
         select(BookingsORM.room_id, func.count("*").label("rooms_booked"))
         .select_from(BookingsORM)
@@ -40,16 +42,16 @@ def unoccupied_rooms(
         name="rooms_ids_for_hotel"
     )
 
-    query = (
+    # TODO: Починить типизацию
+    rooms_ids_to_get = (
         select(rooms_left_table.c.room_id)
         .select_from(rooms_left_table)
         .filter(
-            rooms_left_table.c.rooms_left > 0,
-            rooms_left_table.c.room_id.in_(rooms_ids_for_hotel),
+            rooms_left_table.c.rooms_left > 0,  # type: ignore
+            rooms_left_table.c.room_id.in_(rooms_ids_for_hotel),  # type: ignore
         )
     )
-
-    return query
+    return rooms_ids_to_get
 
 
 def add_pagination(

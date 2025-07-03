@@ -27,8 +27,9 @@ async def get_hotels(
     location: str | None = Query(default=None, description="Адрес отеля"),
 ):
     per_page = pagination.per_page or 5
+    page = pagination.page or 1
     limit = per_page
-    offset = per_page * (pagination.page - 1)
+    offset = per_page * (page - 1)
     return await db.hotels.get_all(
         title=title, location=location, limit=limit, offset=offset
     )
@@ -49,8 +50,9 @@ async def get_hotels_unoccupied(
     location: str | None = Query(default=None, description="Адрес отеля"),
 ):
     per_page = pagination.per_page or 5
+    page = pagination.page or 1
     limit = per_page
-    offset = per_page * (pagination.page - 1)
+    offset = per_page * (page - 1)
     return await db.hotels.get_filtered_by_time(
         date_from=date_from,
         date_to=date_to,

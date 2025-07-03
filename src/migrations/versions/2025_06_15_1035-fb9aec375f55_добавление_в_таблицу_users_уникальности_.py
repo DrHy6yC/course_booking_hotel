@@ -17,10 +17,10 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_unique_constraint(None, "users", ["login"])
-    op.create_unique_constraint(None, "users", ["email"])
+    op.create_unique_constraint("uq_users_login", "users", ["login"])
+    op.create_unique_constraint("uq_users_email", "users", ["email"])
 
 
 def downgrade() -> None:
-    op.drop_constraint(None, "users", type_="unique")
-    op.drop_constraint(None, "users", type_="unique")
+    op.drop_constraint("uq_users_login", "users", type_="unique")
+    op.drop_constraint("uq_users_email", "users", type_="unique")

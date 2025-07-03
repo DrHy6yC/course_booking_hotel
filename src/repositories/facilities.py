@@ -24,7 +24,8 @@ class RoomsFacilitiesRepository(BaseRepository):
             self.model.room_id == room_id
         )
         res = await self.session.execute(now_ids_query)
-        now_ids: list[int] = res.scalars().all()
+        # TODO: Починить типизацию
+        now_ids: list[int] = res.scalars().all()  # type: ignore
         delete_ids: list[int] = list(set(now_ids) - set(new_ids))
         create_ids: list[int] = list(set(new_ids) - set(now_ids))
         print(delete_ids)

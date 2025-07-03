@@ -6,6 +6,7 @@ from src.models.bookings import BookingsORM
 from src.repositories.base import BaseRepository
 from src.repositories.mappers.mappers import BookingDataMapper
 from src.repositories.utils import unoccupied_rooms
+from src.schemas.booking import Booking, BookingAdd
 
 
 class BookingsRepository(BaseRepository):
@@ -22,7 +23,9 @@ class BookingsRepository(BaseRepository):
             for booking in res.scalars().all()
         ]
 
-    async def add_booking(self, model_data: BookingsORM, hotel_id: int):
+    async def add_booking(
+        self, model_data: BookingAdd, hotel_id: int
+    ) -> Booking | None:
         filter_id = unoccupied_rooms(
             hotel_id=hotel_id,
             date_from=model_data.date_from,
@@ -32,7 +35,7 @@ class BookingsRepository(BaseRepository):
         room_ids = result.scalars().all()
         if model_data.room_id in room_ids:
             booking = await self.add(model_data=model_data)
-            return booking
+            return booking  # type: ignore
         else:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

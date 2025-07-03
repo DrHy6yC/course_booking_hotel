@@ -1,6 +1,9 @@
 import sys
-from contextlib import asynccontextmanager
 from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent))
+
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
@@ -14,14 +17,12 @@ from src.api.rooms import router as router_rooms
 from src.api.tasks import router as router_tasks
 from src.connectors.redis_init import redis_manager
 
-sys.path.append(str(Path(__file__).parent.parent))
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await redis_manager.connect()
     FastAPICache.init(
-        RedisBackend(redis_manager.redis), prefix="fastapi-cache"
+        RedisBackend(redis_manager._redis), prefix="fastapi-cache"
     )
     yield
     await redis_manager.close()

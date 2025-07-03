@@ -1,20 +1,20 @@
-from typing import TypeVar
+from typing import Generic, Type, TypeVar
 
 from pydantic import BaseModel
 from src.connectors.database_init import BaseORM
 
-DBModelType = TypeVar(name="DBModelType", bound=BaseORM)
-SchemaType = TypeVar(name="SchemaType", bound=BaseModel)
+SchemaType = TypeVar("SchemaType", bound=BaseModel)
+DBModelType = TypeVar("DBModelType", bound=BaseORM)
 
 
-class DataMapper:
-    db_model: type[DBModelType] = None
-    schema: type[SchemaType] = None
+class DataMapper(Generic[DBModelType, SchemaType]):
+    db_model: Type[DBModelType]
+    schema: Type[SchemaType]
 
     @classmethod
-    def map_to_domain_entity(cls, data):
+    def map_to_domain_entity(cls, data: DBModelType) -> SchemaType:
         return cls.schema.model_validate(data, from_attributes=True)
 
     @classmethod
-    def map_to_persistence_entity(cls, data):
+    def map_to_persistence_entity(cls, data: SchemaType) -> DBModelType:
         return cls.db_model(**data.model_dump())

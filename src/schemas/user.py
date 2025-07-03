@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, conint
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserLogin(BaseModel):
@@ -12,7 +13,7 @@ class UserBase(BaseModel):
     login: str
     name: str
     email: EmailStr
-    age: conint(ge=0, le=150)
+    age: Annotated[int, Field(ge=0, le=150)]
 
 
 class UserRequestAdd(UserBase):
