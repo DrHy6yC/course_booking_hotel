@@ -71,9 +71,9 @@ class BaseRepository(Generic[DBModelType, DataMapperType]):
     # TODO: Починить типизацию
     async def edit(
         self,
-        model_data: SchemaType,
+        model_data: SchemaType,  # type: ignore
         exclude_unset: bool = False,
-        **filter_by,  # type: ignore
+        **filter_by,
     ) -> None:
         edit_model_stmt = (
             update(self.model)

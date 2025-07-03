@@ -92,27 +92,35 @@ celery --app=src.tasks.celery_app:celery_instance worker -l INFO -B
 ***
 ## Форматирование с Black по PEP8
 ``````
-Проверка изменений
+Проверка изменений:
 black --diff C:\Pet-projects\course_booking_hotel\src
 
-Применение изменений в выбранной папке
+Применение изменений в выбранной папке:
 black .\src\
 
-Применение изменений для импортов
+Применение изменений для импортов:
 isort .\src\
 ``````
 ***
 ## Запуск тестов
     pytest -v
 
-    Запуск с выводом логов 
+    Запуск с выводом логов :
     pytest -v
 
-    Запуск одного теста
+    Запуск одного теста:
     pytest .\tests\integration_tests\bookings\test_api.py
 *** 
 ## Ruff
     Линтер файлов:
     ruff check
+
+    Форматирование по PEP8:
+    ruff format
+***
+## Pyright
+    Запуск проверки типизации:
+    pyright
+
 
 
