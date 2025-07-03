@@ -37,6 +37,7 @@ async def register_user(
         await db.users.add(data_db)
         await db.commit()
         return {"status": "OK"}
+    # TODO: Переписать на свои исключения
     except Exception as error:
         print(error)
         raise HTTPException(

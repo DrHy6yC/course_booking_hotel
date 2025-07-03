@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException, status
 from fastapi_cache.decorator import cache
 from src.api.dependencies import DBDep, UserIdDep
+from src.exceptions import AllRoomsBusyError, ObjectNotFoundError
 from src.schemas.booking import BookingAdd, BookingRequestAdd
 from src.schemas.message import MessageReturn, MessageReturnBooking
+from src.schemas.room import Room
 
 router = APIRouter(prefix="/bookings", tags=["Бронирование номеров"])
 
@@ -37,8 +39,9 @@ async def create_bookings(
     user_id: UserIdDep,
     booking_data: BookingRequestAdd,
 ) -> MessageReturnBooking:
-    room = await db.rooms.get_one_or_none(id=booking_data.room_id)
-    if not room:
+    try:
+        room: Room = await db.rooms.get_one(id=booking_data.room_id)
+    except ObjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"status": "Error - Номер не найден"},
@@ -46,9 +49,15 @@ async def create_bookings(
     _booking_data = BookingAdd(
         user_id=user_id, price=room.price, **booking_data.model_dump()
     )
-    result = await db.bookings.add_booking(
-        _booking_data, hotel_id=room.hotel_id
-    )
+    try:
+        result = await db.bookings.add_booking(
+            _booking_data, hotel_id=room.hotel_id
+        )
+    except AllRoomsBusyError as ex:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"status": ex.detail},
+        )
     await db.commit()
     # TODO: Починить типизацию
     return MessageReturnBooking(status="OK", booking=result)  # type: ignore

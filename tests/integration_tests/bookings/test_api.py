@@ -15,9 +15,9 @@ today_plus_3 = str(date.today() + timedelta(days=3))
     [
         (2, today, tomorrow, 200),
         (2, today, tomorrow, 200),
-        (2, today, tomorrow, 404),
+        (2, today, tomorrow, 409),
         (2, today_plus_2, today_plus_3, 200),
-        (2, today, today_plus_3, 404),
+        (2, today, today_plus_3, 409),
     ],
 )
 async def test_post_booking(

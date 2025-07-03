@@ -1,7 +1,9 @@
 from typing import Generic, Type, TypeVar
 
 from sqlalchemy import delete, insert, select, update
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.exceptions import ObjectNotFoundError
 from src.repositories.mappers.base import DataMapper, DBModelType, SchemaType
 
 DataMapperType = TypeVar("DataMapperType", bound=DataMapper)
@@ -43,6 +45,15 @@ class BaseRepository(Generic[DBModelType, DataMapperType]):
         entity = result.scalars().one_or_none()
         if entity is None:
             return None
+        return self.mapper.map_to_domain_entity(entity)
+
+    async def get_one(self, **filter_by) -> SchemaType:  # type: ignore
+        query = select(self.model).filter_by(**filter_by)
+        result = await self.session.execute(query)
+        try:
+            entity = result.scalar_one()
+        except NoResultFound:
+            raise ObjectNotFoundError
         return self.mapper.map_to_domain_entity(entity)
 
     # TODO: Починить типизацию, вместо SchemaType добавить две схемы,
