@@ -61,4 +61,6 @@ room_standard = Example(
 )
 
 date_today = Example(summary="Cегодня", value=date.today())
-date_tomorrow = Example(summary="Завтра", value=date.today() + timedelta(days=1))
+date_tomorrow = Example(
+    summary="Завтра", value=date.today() + timedelta(days=1)
+)

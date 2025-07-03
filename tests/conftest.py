@@ -2,7 +2,9 @@
 import json
 from unittest import mock
 
-mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
+mock.patch(
+    "fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f
+).start()
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -15,7 +17,7 @@ from src.connectors.database_init import (
     engine_null_pool,
 )
 from src.main import app
-from src.models import * # noqa: F403
+from src.models import *  # noqa: F403
 from src.schemas.hotel import HotelAdd
 from src.schemas.facility import FacilityAdd
 from src.schemas.room import RoomAdd
@@ -35,7 +37,9 @@ async def async_setup_db(check_test_mode):
 
 
 async def get_db_null_pool():
-    async with DBManager(session_factories=async_session_maker_null_pool) as db:
+    async with DBManager(
+        session_factories=async_session_maker_null_pool
+    ) as db:
         yield db
 
 
@@ -58,19 +62,27 @@ async def ac():
 
 @pytest.fixture(scope="session", autouse=True)
 async def async_fill_db(async_setup_db):
-    with open(file="tests/mock_hotels.json", mode="r", encoding="utf-8") as f_h:
+    with open(
+        file="tests/mock_hotels.json", mode="r", encoding="utf-8"
+    ) as f_h:
         hotel_data = json.load(f_h)
 
-    with open(file="tests/mock_facilities.json", mode="r", encoding="utf-8") as f_f:
+    with open(
+        file="tests/mock_facilities.json", mode="r", encoding="utf-8"
+    ) as f_f:
         facilities_data = json.load(f_f)
 
     with open(file="tests/mock_rooms.json", mode="r", encoding="utf-8") as f_r:
         room_data = json.load(f_r)
 
     hotels = [HotelAdd.model_validate(hotel) for hotel in hotel_data]
-    facilities = [FacilityAdd.model_validate(facility) for facility in facilities_data]
+    facilities = [
+        FacilityAdd.model_validate(facility) for facility in facilities_data
+    ]
     rooms = [RoomAdd.model_validate(room) for room in room_data]
-    async with DBManager(session_factories=async_session_maker_null_pool) as db_:
+    async with DBManager(
+        session_factories=async_session_maker_null_pool
+    ) as db_:
         await db_.hotels.add_bulk(hotels)
         await db_.facilities.add_bulk(facilities)
         await db_.rooms.add_bulk(rooms)

@@ -5,8 +5,10 @@ from sqlalchemy.orm import joinedload, selectinload
 
 from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
-from src.repositories.mappers.mappers import (RoomDataMapper,
-                                              RoomWithRelsDataMapper)
+from src.repositories.mappers.mappers import (
+    RoomDataMapper,
+    RoomWithRelsDataMapper,
+)
 from src.repositories.utils import unoccupied_rooms
 
 
@@ -14,7 +16,9 @@ class RoomsRepository(BaseRepository):
     model = RoomsORM
     mapper = RoomDataMapper
 
-    async def get_filter_by_time(self, hotel_id: int, date_from: date, date_to: date):
+    async def get_filter_by_time(
+        self, hotel_id: int, date_from: date, date_to: date
+    ):
         filter_id = unoccupied_rooms(
             hotel_id=hotel_id, date_from=date_from, date_to=date_to
         )

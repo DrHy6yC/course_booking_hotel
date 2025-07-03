@@ -23,7 +23,9 @@ class HotelsRepository(BaseRepository):
         limit: int,
         offset: int,
     ) -> list[Hotel]:
-        id_unoccupied_rooms = unoccupied_rooms(date_from=date_from, date_to=date_to)
+        id_unoccupied_rooms = unoccupied_rooms(
+            date_from=date_from, date_to=date_to
+        )
         id_unoccupied_hotels = (
             select(RoomsORM.hotel_id)
             .select_from(RoomsORM)
@@ -61,5 +63,6 @@ class HotelsRepository(BaseRepository):
         )
         result = await self.session.execute(query)
         return [
-            self.mapper.map_to_domain_entity(hotel) for hotel in result.scalars().all()
+            self.mapper.map_to_domain_entity(hotel)
+            for hotel in result.scalars().all()
         ]

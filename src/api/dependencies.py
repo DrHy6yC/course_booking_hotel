@@ -9,10 +9,17 @@ from src.utils.db_manager import DBManager
 
 
 class PaginationParams(BaseModel):
-    page: Annotated[int | None, Query(default=1, description="Номер страницы", ge=1)]
+    page: Annotated[
+        int | None, Query(default=1, description="Номер страницы", ge=1)
+    ]
     per_page: Annotated[
         int | None,
-        Query(default=None, description="Количество отелей на странице", ge=1, le=10),
+        Query(
+            default=None,
+            description="Количество отелей на странице",
+            ge=1,
+            le=10,
+        ),
     ]
 
 
@@ -24,7 +31,9 @@ def get_token(request: Request) -> str:
     if not access_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"status": "Error - нет активного пользователя, залогиньтесь"},
+            detail={
+                "status": "Error - нет активного пользователя, залогиньтесь"
+            },
         )
     return access_token
 

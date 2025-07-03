@@ -48,7 +48,9 @@ def resize_image_celery(image_path: str):
 
 async def get_bookings_with_today_checkin_helper():
     print("Я запускаю поиск бронирований")
-    async with DBManager(session_factories=async_session_maker_null_pool) as db:
+    async with DBManager(
+        session_factories=async_session_maker_null_pool
+    ) as db:
         bookings_get = await db.bookings.get_bookings_with_today_checkin()
         print(bookings_get)
 

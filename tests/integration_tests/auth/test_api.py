@@ -27,7 +27,6 @@ async def test_login_logout(
     assert result_register.status_code == status_code
 
     if result_register.status_code == 200:
-
         result_login = await ac.post(
             url="auth/login",
             json={

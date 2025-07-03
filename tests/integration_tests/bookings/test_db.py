@@ -22,7 +22,9 @@ async def test_add_booking_crud(db):
     added_booking = await db.bookings.add(booking_data)
     await db.commit()
     assert added_booking
-    assert added_booking.user_id == user_id and added_booking.room_id == room_id
+    assert (
+        added_booking.user_id == user_id and added_booking.room_id == room_id
+    )
 
     received_booking = await db.bookings.get_one_or_none(id=added_booking.id)
     await db.rollback()

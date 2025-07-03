@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Body, HTTPException, Response, status
 
 from src.api.dependencies import DBDep, UserIdDep
-from src.openapi_examples import (admin_example, admin_login_example,
-                                  user_example)
+from src.openapi_examples import (
+    admin_example,
+    admin_login_example,
+    user_example,
+)
 from src.schemas.user import User, UserAdd, UserLogin, UserRequestAdd
 from src.services.auth import AuthServices
 
@@ -39,12 +42,16 @@ async def register_user(
         print(error)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail={"status": "Error - Пользователь с такими данными уже существует"},
+            detail={
+                "status": "Error - Пользователь с такими данными уже существует"
+            },
         )
 
 
 @router.post(
-    path="/login", summary="Залогиниться", description="Зайти по логину и паролю"
+    path="/login",
+    summary="Залогиниться",
+    description="Зайти по логину и паролю",
 )
 async def login_user(
     response: Response,
@@ -59,7 +66,9 @@ async def login_user(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"status": "Error - Пользователь с таким email не зарегистрирован"},
+            detail={
+                "status": "Error - Пользователь с таким email не зарегистрирован"
+            },
         )
     if not AuthServices().verify_password(data.password, user.hashed_password):
         raise HTTPException(
@@ -83,7 +92,9 @@ async def get_me(
     return await db.users.get_one_or_none(id=user_id)
 
 
-@router.post(path="/logout", summary="Выйти", description="Выйти из под пользователя")
+@router.post(
+    path="/logout", summary="Выйти", description="Выйти из под пользователя"
+)
 async def logout_user(response: Response):
     response.delete_cookie(key="access_token")
     return {"status": "OK"}

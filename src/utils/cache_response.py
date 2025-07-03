@@ -21,7 +21,9 @@ def cache_response(redis: RedisManager, expire: int = 60) -> Callable:
             request: Request = kwargs.get("request")
 
             if not request:
-                raise ValueError("Request object is required in endpoint for caching")
+                raise ValueError(
+                    "Request object is required in endpoint for caching"
+                )
 
             # Создаем ключ для кэша на основе пути и параметров запроса
             path: str = request.url.path

@@ -2,8 +2,10 @@ from sqlalchemy import delete, insert, select
 
 from src.models.facilities import FacilitiesORM, RoomsFacilitiesORM
 from src.repositories.base import BaseRepository
-from src.repositories.mappers.mappers import (FacilityDataMapper,
-                                              RoomFacilityDataMapper)
+from src.repositories.mappers.mappers import (
+    FacilityDataMapper,
+    RoomFacilityDataMapper,
+)
 
 
 class FacilitiesRepository(BaseRepository):
@@ -36,6 +38,9 @@ class RoomsFacilitiesRepository(BaseRepository):
             await self.session.execute(delete_m2m_facilities_stmt)
         if create_ids:
             create_m2m_facilities_stmt = insert(self.model).values(
-                [{"room_id": room_id, "facility_id": f_id} for f_id in create_ids]
+                [
+                    {"room_id": room_id, "facility_id": f_id}
+                    for f_id in create_ids
+                ]
             )
             await self.session.execute(create_m2m_facilities_stmt)

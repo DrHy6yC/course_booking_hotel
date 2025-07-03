@@ -4,7 +4,12 @@ from fastapi import APIRouter, Body, HTTPException, Query, status
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import DBDep, PaginationDep
-from src.openapi_examples import date_today, date_tomorrow, hotel_dubai, hotel_sochi
+from src.openapi_examples import (
+    date_today,
+    date_tomorrow,
+    hotel_dubai,
+    hotel_sochi,
+)
 from src.schemas.hotel import HotelAdd, HotelPatch
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
@@ -111,7 +116,9 @@ async def edit_hotel(
     hotel_data: HotelPatch,
     db: DBDep,
 ):
-    await db.hotels.edit(id=hotel_id, model_data=hotel_data, exclude_unset=True)
+    await db.hotels.edit(
+        id=hotel_id, model_data=hotel_data, exclude_unset=True
+    )
     await db.commit()
     return {"status": "OK"}
 
