@@ -16,6 +16,16 @@ select = [
 #    "YTT", # flake8-2020 (устаревшие фичи)
 ]
 
+[tool.ruff.lint.isort]
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+force-sort-within-sections = false
+
 [tool.ruff.format]
 docstring-code-format = true
 docstring-code-line-length = 72
