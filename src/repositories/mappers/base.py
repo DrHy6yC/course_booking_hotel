@@ -1,7 +1,6 @@
 from typing import TypeVar
 
 from pydantic import BaseModel
-
 from src.connectors.database_init import BaseORM
 
 DBModelType = TypeVar(name="DBModelType", bound=BaseORM)

@@ -14,7 +14,7 @@ from src.models import *  # noqa F403
 config = context.config
 
 config.set_main_option(
-    name="sqlalchemy.url", value=f"{settings.DB_URL}?async_fallback=True"
+    name="sqlalchemy.url", value=f"{settings.db_url}?async_fallback=True"
 )
 
 # Interpret the config file for Python logging.

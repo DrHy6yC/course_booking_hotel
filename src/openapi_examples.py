@@ -2,7 +2,6 @@ from datetime import date, timedelta
 
 from fastapi.openapi.models import Example
 
-
 admin_example = Example(
     summary="Админ",
     value={

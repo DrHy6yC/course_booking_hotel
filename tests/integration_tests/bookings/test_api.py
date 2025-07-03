@@ -1,8 +1,8 @@
 from datetime import date, timedelta
+
 import pytest
 
 from tests.conftest import get_db_null_pool
-
 
 today = str(date.today())
 tomorrow = str(date.today() + timedelta(days=1))

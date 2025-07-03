@@ -1,7 +1,6 @@
 import shutil
 
 from fastapi import APIRouter, BackgroundTasks, UploadFile
-
 from src.tasks.tasks import resize_image, resize_image_celery, sleep_task
 
 router = APIRouter(prefix="/tasks", tags=["Задачи"])
@@ -38,7 +37,7 @@ def add_image_celery(file: UploadFile):
     summary="Добавить картинку с помощью BackgroundTasks",
     description="Добавляем картинку в папку в static/images",
 )
-def add_image_BackgroundTasks(
+def add_image_background_tasks(
     file: UploadFile, background_tasks: BackgroundTasks
 ):
     image_path = f"src/static/images/{file.filename}"

@@ -1,8 +1,8 @@
-import json
 import functools
-from typing import Callable, Any
-from fastapi import Request
+import json
+from typing import Any, Callable
 
+from fastapi import Request
 from src.utils.redis_manager import RedisManager
 
 

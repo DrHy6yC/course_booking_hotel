@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Body, HTTPException, Response, status
-
 from src.api.dependencies import DBDep, UserIdDep
 from src.openapi_examples import (
     admin_example,
@@ -43,7 +42,8 @@ async def register_user(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail={
-                "status": "Error - Пользователь с такими данными уже существует"
+                "status": "Error"
+                " - Пользователь с такими данными уже существует"
             },
         )
 
@@ -67,7 +67,8 @@ async def login_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
-                "status": "Error - Пользователь с таким email не зарегистрирован"
+                "status": "Error -"
+                " Пользователь с таким email не зарегистрирован"
             },
         )
     if not AuthServices().verify_password(data.password, user.hashed_password):

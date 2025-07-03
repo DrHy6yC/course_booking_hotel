@@ -2,7 +2,6 @@ from datetime import date
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
-
 from src.models.bookings import BookingsORM
 from src.repositories.base import BaseRepository
 from src.repositories.mappers.mappers import BookingDataMapper

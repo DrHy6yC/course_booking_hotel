@@ -2,7 +2,6 @@ from datetime import date
 
 from fastapi import APIRouter, Body, HTTPException, Query, status
 from fastapi_cache.decorator import cache
-
 from src.api.dependencies import DBDep, PaginationDep
 from src.openapi_examples import (
     date_today,
@@ -75,7 +74,8 @@ async def get_hotel_by_id(hotel_id: int, db: DBDep):
 @router.post(
     path="",
     summary="Добавление нового отеля",
-    description="Необходимо ввести title и name, id генерируется автоматически",
+    description="Необходимо ввести title и name,"
+    " id генерируется автоматически",
 )
 async def create_hotel(
     db: DBDep,

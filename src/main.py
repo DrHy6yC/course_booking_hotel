@@ -6,7 +6,6 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-
 from src.api.auth import router as router_auth
 from src.api.bookings import router as router_bookings
 from src.api.facilities import router as router_facilities

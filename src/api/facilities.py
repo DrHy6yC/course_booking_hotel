@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from fastapi_cache.decorator import cache
-
 from src.api.dependencies import DBDep
 from src.custom_class import KeyBuilderCustom
 from src.schemas.facility import FacilityAdd

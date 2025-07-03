@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
 from fastapi_cache.decorator import cache
-
 from src.api.dependencies import DBDep, UserIdDep
 from src.schemas.booking import BookingAdd, BookingRequestAdd
 

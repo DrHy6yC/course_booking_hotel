@@ -2,7 +2,6 @@ from datetime import date
 
 from fastapi import APIRouter, Body, HTTPException, Path, Query, status
 from fastapi_cache.decorator import cache
-
 from src.api.dependencies import DBDep
 from src.openapi_examples import date_today, date_tomorrow, room_standard
 from src.schemas.facility import RoomFacilityAdd

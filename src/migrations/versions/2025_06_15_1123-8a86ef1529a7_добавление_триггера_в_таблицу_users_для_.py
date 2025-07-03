@@ -9,7 +9,6 @@ Create Date: 2025-06-15 11:23:27.322163
 from typing import Sequence, Union
 
 from alembic import op
-
 from src.migrations.triggers import (
     create_trigger_function,
     create_update_trigger,
@@ -33,6 +32,7 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.execute(
-        f"DROP TRIGGER IF EXISTS {table_name}_{type_before}_timestamp ON {table_name};"
+        f"DROP TRIGGER "
+        f"IF EXISTS {table_name}_{type_before}_timestamp ON {table_name};"
     )
     op.execute(f"DROP FUNCTION IF EXISTS set_{table_name}_{column};")

@@ -1,6 +1,20 @@
 [tool.ruff]
 src = ["src", "tests"]
+exclude = ["venv", "postgres_data", "redis_data"]
 line-length = 79
+
+[tool.ruff.lint]
+select = [
+    "E",   # PEP 8 ошибки (E)
+    "W",   # PEP 8 предупреждения (W)
+    "F",   # Pyflakes
+    "I",   # isort (сортировка импортов)
+#    "B",   # flake8-bugbear
+#    "C",   # flake8-comprehensions
+    "N",   # pep8-naming
+    "UP",  # pyupgrade (современный синтаксис)
+#    "YTT", # flake8-2020 (устаревшие фичи)
+]
 
 [tool.ruff.format]
 docstring-code-format = true

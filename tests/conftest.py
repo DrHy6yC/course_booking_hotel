@@ -8,7 +8,6 @@ mock.patch(
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-
 from src.api.dependencies import get_db
 from src.config import settings
 from src.connectors.database_init import (
@@ -18,8 +17,8 @@ from src.connectors.database_init import (
 )
 from src.main import app
 from src.models import *  # noqa: F403
-from src.schemas.hotel import HotelAdd
 from src.schemas.facility import FacilityAdd
+from src.schemas.hotel import HotelAdd
 from src.schemas.room import RoomAdd
 from src.utils.db_manager import DBManager
 
@@ -62,17 +61,13 @@ async def ac():
 
 @pytest.fixture(scope="session", autouse=True)
 async def async_fill_db(async_setup_db):
-    with open(
-        file="tests/mock_hotels.json", mode="r", encoding="utf-8"
-    ) as f_h:
+    with open(file="tests/mock_hotels.json", encoding="utf-8") as f_h:
         hotel_data = json.load(f_h)
 
-    with open(
-        file="tests/mock_facilities.json", mode="r", encoding="utf-8"
-    ) as f_f:
+    with open(file="tests/mock_facilities.json", encoding="utf-8") as f_f:
         facilities_data = json.load(f_f)
 
-    with open(file="tests/mock_rooms.json", mode="r", encoding="utf-8") as f_r:
+    with open(file="tests/mock_rooms.json", encoding="utf-8") as f_r:
         room_data = json.load(f_r)
 
     hotels = [HotelAdd.model_validate(hotel) for hotel in hotel_data]
