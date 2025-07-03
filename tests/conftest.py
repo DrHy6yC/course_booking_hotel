@@ -1,8 +1,6 @@
+# ruff: noqa: E402
 import json
 from unittest import mock
-
-from src.services.auth import AuthServices
-
 
 mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 
@@ -17,7 +15,7 @@ from src.connectors.database_init import (
     engine_null_pool,
 )
 from src.main import app
-from src.models import *
+from src.models import * # noqa: F403
 from src.schemas.hotel import HotelAdd
 from src.schemas.facility import FacilityAdd
 from src.schemas.room import RoomAdd

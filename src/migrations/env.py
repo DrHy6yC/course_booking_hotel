@@ -6,7 +6,7 @@ from sqlalchemy import engine_from_config, pool
 
 from src.config import settings
 from src.connectors.database_init import BaseORM
-from src.models import *
+from src.models import * # noqa F403
 
 
 # this is the Alembic Config object, which provides

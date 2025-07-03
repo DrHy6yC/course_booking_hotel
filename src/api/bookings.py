@@ -13,7 +13,7 @@ router = APIRouter(prefix="/bookings", tags=["Бронирование номе�
     description="Получить забронированные номера для всех пользователей",
 )
 @cache(expire=10)
-async def get_bookings_me(db: DBDep):
+async def get_bookings(db: DBDep):
     return await db.bookings.get_all()
 
 

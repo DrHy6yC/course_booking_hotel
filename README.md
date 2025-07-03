@@ -111,5 +111,8 @@ isort .\src\
     Запуск одного теста
     pytest .\tests\integration_tests\bookings\test_api.py
 *** 
+## Ruff
+    Линтер файлов:
+    ruff check
 
 
