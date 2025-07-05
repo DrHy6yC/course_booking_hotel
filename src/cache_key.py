@@ -4,7 +4,7 @@ from fastapi import Request, Response
 from fastapi_cache import KeyBuilder
 
 
-class KeyBuilderCustom(KeyBuilder):
+class KeyBuilderForRedisCache(KeyBuilder):
     def __init__(self, my_key: str):
         self.my_key = my_key
 

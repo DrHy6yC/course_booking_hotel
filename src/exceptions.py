@@ -11,3 +11,7 @@ class ObjectNotFoundError(CourseError):
 
 class AllRoomsBusyError(CourseError):
     detail = "Все номера заняты"
+
+
+class ObjectAlreadyExistsError(CourseError):
+    detail = "Объект уже существует"

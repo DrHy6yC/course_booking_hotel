@@ -1,5 +1,6 @@
 # ruff: noqa: E402
 import json
+
 from typing import AsyncGenerator
 from unittest import mock
 
@@ -9,6 +10,7 @@ mock.patch(
 
 
 import pytest
+
 from httpx import ASGITransport, AsyncClient
 from src.api.dependencies import get_db
 from src.config import settings

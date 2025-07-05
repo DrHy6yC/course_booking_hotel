@@ -1,22 +1,26 @@
 [tool.ruff]
+# Пути, в которых будет проверка
 src = ["src", "tests"]
-exclude = ["venv", "postgres_data", "redis_data"]
+
+# Исключаемые папки
+exclude = ["venv", "postgres_data", "redis_data", "plugin"]
+
+# Максимальная длина строки согласно PEP 8 (79 символов)
 line-length = 79
 
 [tool.ruff.lint]
+# Включаем основные группы правил
 select = [
-    "E",   # PEP 8 ошибки (E)
-    "W",   # PEP 8 предупреждения (W)
+    "E",   # PEP 8 ошибки
+    "W",   # PEP 8 предупреждения
     "F",   # Pyflakes
     "I",   # isort (сортировка импортов)
-#    "B",   # flake8-bugbear
-#    "C",   # flake8-comprehensions
     "N",   # pep8-naming
     "UP",  # pyupgrade (современный синтаксис)
-#    "YTT", # flake8-2020 (устаревшие фичи)
 ]
 
 [tool.ruff.lint.isort]
+# Последовательность групп импортов
 section-order = [
   "future",
   "standard-library",
@@ -24,23 +28,17 @@ section-order = [
   "first-party",
   "local-folder",
 ]
+
+# Вставлять одну пустую строку между группами импортов
+lines-between-types = 1
+
+# Не принудительно сортировать внутри секций, оставить дефолтное поведение
 force-sort-within-sections = false
 
+# Отключаем отключение разделения по секциям
+no-sections = false
+
 [tool.ruff.format]
+# Форматируем докстринги, длина строки в них согласно PEP 8
 docstring-code-format = true
 docstring-code-line-length = 72
-
-#[tool.black]
-#line-length = 79
-#target-version = ['py310']
-#
-## Исключение для всей папки migrations и файла env.py
-#exclude = '''
-#/(
-#    src/migrations/env\.py
-#)/
-#'''
-#
-#[tool.isort]
-#profile = "black"
-#skip = ["src/migrations", "src/migrations/env.py"]

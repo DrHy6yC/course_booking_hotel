@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body, HTTPException, Response, status
 from src.api.dependencies import DBDep, UserIdDep
+from src.exceptions import ObjectAlreadyExists
 from src.openapi_examples import (
     admin_example,
     admin_login_example,
@@ -35,11 +36,7 @@ async def register_user(
     )
     try:
         await db.users.add(data_db)
-        await db.commit()
-        return {"status": "OK"}
-    # TODO: Переписать на свои исключения
-    except Exception as error:
-        print(error)
+    except ObjectAlreadyExists:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail={
@@ -47,6 +44,8 @@ async def register_user(
                 " - Пользователь с такими данными уже существует"
             },
         )
+    await db.commit()
+    return {"status": "OK"}
 
 
 @router.post(
