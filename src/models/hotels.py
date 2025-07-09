@@ -1,5 +1,6 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
+
 from src.connectors.database_init import BaseORM
 
 

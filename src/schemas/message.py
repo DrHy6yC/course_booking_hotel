@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+
 from src.schemas.booking import Booking
 
 

@@ -6,12 +6,15 @@ class CourseError(Exception):
 
 
 class ObjectNotFoundError(CourseError):
-    detail = "Объект не найден"
+    detail = "ERROR - Объект не найден"
 
 
 class AllRoomsBusyError(CourseError):
-    detail = "Все номера заняты"
+    detail = "ERROR - Все номера заняты"
 
 
 class ObjectAlreadyExistsError(CourseError):
-    detail = "Объект уже существует"
+    detail = "ERROR - Объект уже существует"
+
+class InvalidTimeRangeError(CourseError):
+    detail = "ERROR - Начальное время не может быть позже конечного."

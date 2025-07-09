@@ -3,7 +3,8 @@ from typing import Generic, Type, TypeVar
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.exceptions import ObjectAlreadyExists, ObjectNotFoundError
+
+from src.exceptions import ObjectAlreadyExistsError, ObjectNotFoundError
 from src.repositories.mappers.base import DataMapper, DBModelType, SchemaType
 
 DataMapperType = TypeVar("DataMapperType", bound=DataMapper)
@@ -67,7 +68,7 @@ class BaseRepository(Generic[DBModelType, DataMapperType]):
         try:
             result = await self.session.execute(add_model_stmt)
         except IntegrityError:
-            raise ObjectAlreadyExists
+            raise ObjectAlreadyExistsError
         entity = result.scalar_one()
         return self.mapper.map_to_domain_entity(entity)
 

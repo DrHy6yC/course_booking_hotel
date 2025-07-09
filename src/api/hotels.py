@@ -2,7 +2,9 @@ from datetime import date
 
 from fastapi import APIRouter, Body, HTTPException, Query, status
 from fastapi_cache.decorator import cache
+
 from src.api.dependencies import DBDep, PaginationDep
+from src.exceptions import InvalidTimeRangeError, ObjectNotFoundError
 from src.openapi_examples import (
     date_today,
     date_tomorrow,
@@ -49,6 +51,14 @@ async def get_hotels_unoccupied(
     title: str | None = Query(default=None, description="Название отеля"),
     location: str | None = Query(default=None, description="Адрес отеля"),
 ):
+    try:
+        if date_from > date_to:
+            raise InvalidTimeRangeError
+    except InvalidTimeRangeError:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"status": "ERROR - Дата заезда позже дата выезда"},
+        )
     per_page = pagination.per_page or 5
     page = pagination.page or 1
     limit = per_page
@@ -70,7 +80,13 @@ async def get_hotels_unoccupied(
 )
 @cache(expire=10)
 async def get_hotel_by_id(hotel_id: int, db: DBDep):
-    return await db.hotels.get_one_or_none(id=hotel_id)
+    try:
+        return await db.hotels.get_one(id=hotel_id)
+    except ObjectNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"status": "Error - Отель не существует"},
+        )
 
 
 @router.post(

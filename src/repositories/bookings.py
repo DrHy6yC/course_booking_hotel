@@ -1,6 +1,7 @@
 from datetime import date
 
 from sqlalchemy import select
+
 from src.exceptions import AllRoomsBusyError
 from src.models.bookings import BookingsORM
 from src.repositories.base import BaseRepository

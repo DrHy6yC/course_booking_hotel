@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import CheckConstraint, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
+
 from src.connectors.database_init import BaseORM
 
 

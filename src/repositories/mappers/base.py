@@ -1,6 +1,7 @@
 from typing import Generic, Type, TypeVar
 
 from pydantic import BaseModel
+
 from src.connectors.database_init import BaseORM
 
 SchemaType = TypeVar("SchemaType", bound=BaseModel)

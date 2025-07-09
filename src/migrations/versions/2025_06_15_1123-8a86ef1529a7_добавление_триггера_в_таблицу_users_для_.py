@@ -9,6 +9,7 @@ Create Date: 2025-06-15 11:23:27.322163
 from typing import Sequence, Union
 
 from alembic import op
+
 from src.migrations.triggers import (
     create_trigger_function,
     create_update_trigger,

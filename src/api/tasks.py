@@ -1,6 +1,7 @@
 import shutil
 
 from fastapi import APIRouter, BackgroundTasks, UploadFile
+
 from src.schemas.message import MessageReturn
 from src.tasks.tasks import resize_image, resize_image_celery, sleep_task
 

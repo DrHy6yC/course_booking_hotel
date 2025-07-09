@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body, HTTPException, Response, status
+
 from src.api.dependencies import DBDep, UserIdDep
-from src.exceptions import ObjectAlreadyExists
+from src.exceptions import ObjectAlreadyExistsError
 from src.openapi_examples import (
     admin_example,
     admin_login_example,
@@ -36,7 +37,7 @@ async def register_user(
     )
     try:
         await db.users.add(data_db)
-    except ObjectAlreadyExists:
+    except ObjectAlreadyExistsError:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail={

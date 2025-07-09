@@ -1,6 +1,8 @@
 [tool.ruff]
+
 # Пути, в которых будет проверка
 src = ["src", "tests"]
+preview = true
 
 # Исключаемые папки
 exclude = ["venv", "postgres_data", "redis_data", "plugin"]
@@ -17,9 +19,14 @@ select = [
     "I",   # isort (сортировка импортов)
     "N",   # pep8-naming
     "UP",  # pyupgrade (современный синтаксис)
+    "I001",
 ]
 
+
 [tool.ruff.lint.isort]
+#Указывает что принадлежит к "first-party"
+known-first-party = ["src", "tests"]
+
 # Последовательность групп импортов
 section-order = [
   "future",
@@ -39,6 +46,7 @@ force-sort-within-sections = false
 no-sections = false
 
 [tool.ruff.format]
+line-ending = "auto"
 # Форматируем докстринги, длина строки в них согласно PEP 8
 docstring-code-format = true
 docstring-code-line-length = 72

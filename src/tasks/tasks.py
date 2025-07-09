@@ -4,6 +4,7 @@ import os
 from time import sleep
 
 from PIL import Image
+
 from src.connectors.database_init import async_session_maker_null_pool
 from src.tasks.celery_app import celery_instance
 from src.utils.db_manager import DBManager
