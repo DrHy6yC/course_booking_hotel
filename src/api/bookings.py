@@ -40,20 +40,17 @@ async def create_bookings(
     user_id: UserIdDep,
     booking_data: BookingRequestAdd,
 ) -> MessageReturnBooking:
+    if booking_data.date_from > booking_data.date_to:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"status": "ERROR - Дата заезда позже дата выезда"},
+        )
     try:
         room: Room = await db.rooms.get_one(id=booking_data.room_id)
-        if booking_data.date_from > booking_data.date_to:
-            raise InvalidTimeRangeError
-
     except ObjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"status": "Error - Номер не найден"},
-        )
-    except InvalidTimeRangeError:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail={"status": "ERROR - Дата заезда позже дата выезда"},
         )
     _booking_data = BookingAdd(
         user_id=user_id, price=room.price, **booking_data.model_dump()

@@ -42,12 +42,9 @@ async def get_unoccupied_rooms(
     date_from: date = Query(openapi_examples={"1": date_today}),
     date_to: date = Query(openapi_examples={"1": date_tomorrow}),
 ):
-    try:
-        if date_from > date_to:
-            raise InvalidTimeRangeError
-    except InvalidTimeRangeError:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+    if date_from > date_to:
+         raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"status": "ERROR - Дата заезда позже дата выезда"},
         )
     return await db.rooms.get_filter_by_time(

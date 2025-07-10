@@ -51,12 +51,9 @@ async def get_hotels_unoccupied(
     title: str | None = Query(default=None, description="Название отеля"),
     location: str | None = Query(default=None, description="Адрес отеля"),
 ):
-    try:
-        if date_from > date_to:
-            raise InvalidTimeRangeError
-    except InvalidTimeRangeError:
+    if date_from > date_to:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"status": "ERROR - Дата заезда позже дата выезда"},
         )
     per_page = pagination.per_page or 5
